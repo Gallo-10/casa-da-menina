@@ -51,7 +51,7 @@ export default function UploadImagePage() {
           <ArrowLeft className="h-4 w-4 mr-2" />
           Voltar
         </Button>
-        <h1 className="text-2xl font-bold text-pink-700">Adicionar Nova Imagem</h1>
+        <h1 className="text-2xl font-bold text-blue-700">Adicionar Nova Imagem</h1>
       </div>
 
       <Card>
@@ -128,7 +128,7 @@ export default function UploadImagePage() {
             <Button type="button" variant="outline" onClick={() => router.back()}>
               Cancelar
             </Button>
-            <Button type="submit" className="bg-pink-600 hover:bg-pink-700" disabled={isSubmitting || !image}>
+            <Button type="submit" className="bg-blue-600 hover:bg-blue-700" disabled={isSubmitting || !image}>
               {isSubmitting ? "Enviando..." : "Enviar Imagem"}
             </Button>
           </CardFooter>

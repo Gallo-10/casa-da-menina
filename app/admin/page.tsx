@@ -31,7 +31,7 @@ export default function AdminLoginPage() {
     <div className="flex items-center justify-center min-h-[calc(100vh-8rem)] p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl text-center text-pink-700">Área Administrativa</CardTitle>
+          <CardTitle className="text-2xl text-center text-blue-700">Área Administrativa</CardTitle>
           <CardDescription className="text-center">
             Entre com suas credenciais para acessar o painel administrativo
           </CardDescription>
@@ -62,7 +62,7 @@ export default function AdminLoginPage() {
             </div>
           </CardContent>
           <CardFooter>
-            <Button type="submit" className="w-full bg-pink-600 hover:bg-pink-700">
+            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
               Entrar
             </Button>
           </CardFooter>

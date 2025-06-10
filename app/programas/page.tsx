@@ -181,11 +181,11 @@ export default function ProgramsPage() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="w-full py-12 md:py-24 lg:py-32 bg-pink-50">
+      <section className="w-full py-12 md:py-24 lg:py-32 bg-blue-50">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center space-y-4 text-center">
             <div className="space-y-2">
-              <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-pink-700">
+              <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-blue-700">
                 Nossos Programas
               </h1>
               <p className="mx-auto max-w-[700px] text-gray-600 md:text-xl">
@@ -203,12 +203,12 @@ export default function ProgramsPage() {
           <div className="grid gap-8">
             {programs.map((program, index) => (
               <Card key={index} className="overflow-hidden">
-                <CardHeader className="bg-pink-50">
+                <CardHeader className="bg-blue-50">
                   <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-pink-200 flex items-center justify-center text-pink-700">
+                    <div className="h-12 w-12 rounded-full bg-yellow-200 flex items-center justify-center text-yellow-700">
                       {program.icon}
                     </div>
-                    <CardTitle className="text-2xl text-pink-700">{program.title}</CardTitle>
+                    <CardTitle className="text-2xl text-blue-700">{program.title}</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent className="p-6">
@@ -217,11 +217,11 @@ export default function ProgramsPage() {
                       <p className="text-gray-600 mb-4">{program.description}</p>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-pink-700 mb-3">Principais atividades:</h4>
+                      <h4 className="font-semibold text-blue-700 mb-3">Principais atividades:</h4>
                       <ul className="space-y-2">
                         {program.features.map((feature, featureIndex) => (
                           <li key={featureIndex} className="flex items-start gap-2">
-                            <div className="h-2 w-2 rounded-full bg-pink-400 mt-2 flex-shrink-0"></div>
+                            <div className="h-2 w-2 rounded-full bg-yellow-400 mt-2 flex-shrink-0"></div>
                             <span className="text-gray-600">{feature}</span>
                           </li>
                         ))}
@@ -236,10 +236,10 @@ export default function ProgramsPage() {
       </section>
 
       {/* Statistics Section */}
-      <section className="w-full py-12 md:py-24 lg:py-32 bg-pink-50">
+      <section className="w-full py-12 md:py-24 lg:py-32 bg-blue-50">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center space-y-4 text-center mb-12">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-pink-700">Nossos Resultados</h2>
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-blue-700">Nossos Resultados</h2>
             <p className="mx-auto max-w-[700px] text-gray-600 md:text-xl">
               Números que demonstram o impacto positivo dos nossos programas na vida das meninas acolhidas.
             </p>
@@ -247,25 +247,25 @@ export default function ProgramsPage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <Card>
               <CardContent className="p-6 text-center">
-                <div className="text-4xl font-bold text-pink-700 mb-2">150+</div>
+                <div className="text-4xl font-bold text-blue-700 mb-2">150+</div>
                 <p className="text-gray-600">Meninas acolhidas desde 2010</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-6 text-center">
-                <div className="text-4xl font-bold text-pink-700 mb-2">85%</div>
+                <div className="text-4xl font-bold text-blue-700 mb-2">85%</div>
                 <p className="text-gray-600">Taxa de sucesso em adoções</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-6 text-center">
-                <div className="text-4xl font-bold text-pink-700 mb-2">100%</div>
+                <div className="text-4xl font-bold text-blue-700 mb-2">100%</div>
                 <p className="text-gray-600">Meninas matriculadas na escola</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-6 text-center">
-                <div className="text-4xl font-bold text-pink-700 mb-2">25</div>
+                <div className="text-4xl font-bold text-blue-700 mb-2">25</div>
                 <p className="text-gray-600">Profissionais especializados</p>
               </CardContent>
             </Card>
@@ -278,7 +278,7 @@ export default function ProgramsPage() {
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center space-y-4 text-center">
             <div className="space-y-2">
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-pink-700">
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-blue-700">
                 Ajude a Manter Nossos Programas
               </h2>
               <p className="mx-auto max-w-[700px] text-gray-600 md:text-xl">
@@ -288,10 +288,10 @@ export default function ProgramsPage() {
             </div>
             <div className="space-x-4">
               <Link href="/doar">
-                <Button className="bg-pink-600 hover:bg-pink-700">Fazer uma Doação</Button>
+                <Button className="bg-yellow-500 hover:bg-yellow-600 text-white">Fazer uma Doação</Button>
               </Link>
               <Link href="/voluntariado">
-                <Button variant="outline" className="border-pink-600 text-pink-600 hover:bg-pink-100">
+                <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-100">
                   Seja Voluntário
                 </Button>
               </Link>

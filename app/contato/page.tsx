@@ -49,11 +49,11 @@ export default function ContactPage() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="w-full py-12 md:py-24 lg:py-32 bg-pink-50">
+      <section className="w-full py-12 md:py-24 lg:py-32 bg-blue-50">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center space-y-4 text-center">
             <div className="space-y-2">
-              <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-pink-700">
+              <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-blue-700">
                 Entre em Contato
               </h1>
               <p className="mx-auto max-w-[700px] text-gray-600 md:text-xl">
@@ -71,7 +71,7 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             <Card>
               <CardContent className="p-6 text-center">
-                <div className="h-12 w-12 rounded-full bg-pink-100 flex items-center justify-center mx-auto mb-4">
+                <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -82,13 +82,13 @@ export default function ContactPage() {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="text-pink-600"
+                    className="text-blue-600"
                   >
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                     <circle cx="12" cy="10" r="3"></circle>
                   </svg>
                 </div>
-                <h3 className="font-bold text-pink-700 mb-2">Endereço</h3>
+                <h3 className="font-bold text-blue-700 mb-2">Endereço</h3>
                 <p className="text-gray-600">
                   Rua das Flores, 123
                   <br />
@@ -102,7 +102,7 @@ export default function ContactPage() {
             </Card>
             <Card>
               <CardContent className="p-6 text-center">
-                <div className="h-12 w-12 rounded-full bg-pink-100 flex items-center justify-center mx-auto mb-4">
+                <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -113,12 +113,12 @@ export default function ContactPage() {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="text-pink-600"
+                    className="text-blue-600"
                   >
                     <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                   </svg>
                 </div>
-                <h3 className="font-bold text-pink-700 mb-2">Telefone</h3>
+                <h3 className="font-bold text-blue-700 mb-2">Telefone</h3>
                 <p className="text-gray-600">
                   (11) 1234-5678
                   <br />
@@ -130,7 +130,7 @@ export default function ContactPage() {
             </Card>
             <Card>
               <CardContent className="p-6 text-center">
-                <div className="h-12 w-12 rounded-full bg-pink-100 flex items-center justify-center mx-auto mb-4">
+                <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -141,13 +141,13 @@ export default function ContactPage() {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="text-pink-600"
+                    className="text-blue-600"
                   >
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                     <polyline points="22,6 12,13 2,6"></polyline>
                   </svg>
                 </div>
-                <h3 className="font-bold text-pink-700 mb-2">Email</h3>
+                <h3 className="font-bold text-blue-700 mb-2">Email</h3>
                 <p className="text-gray-600">
                   contato@casadamenina.org
                   <br />
@@ -162,12 +162,12 @@ export default function ContactPage() {
       </section>
 
       {/* Contact Form */}
-      <section className="w-full py-12 bg-pink-50">
+      <section className="w-full py-12 bg-blue-50">
         <div className="container px-4 md:px-6">
           <div className="max-w-2xl mx-auto">
             <Card>
               <CardHeader>
-                <CardTitle className="text-2xl text-center text-pink-700">Envie sua Mensagem</CardTitle>
+                <CardTitle className="text-2xl text-center text-blue-700">Envie sua Mensagem</CardTitle>
               </CardHeader>
               <CardContent>
                 {submitted ? (
@@ -191,7 +191,7 @@ export default function ContactPage() {
                     </div>
                     <h3 className="text-xl font-bold text-green-700 mb-2">Mensagem Enviada!</h3>
                     <p className="text-gray-600">Obrigado pelo seu contato. Responderemos em breve!</p>
-                    <Button onClick={() => setSubmitted(false)} className="mt-4 bg-pink-600 hover:bg-pink-700">
+                    <Button onClick={() => setSubmitted(false)} className="mt-4 bg-blue-600 hover:bg-blue-700">
                       Enviar Nova Mensagem
                     </Button>
                   </div>
@@ -263,7 +263,7 @@ export default function ContactPage() {
                         required
                       />
                     </div>
-                    <Button type="submit" className="w-full bg-pink-600 hover:bg-pink-700" disabled={isSubmitting}>
+                    <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={isSubmitting}>
                       {isSubmitting ? "Enviando..." : "Enviar Mensagem"}
                     </Button>
                   </form>
@@ -280,7 +280,7 @@ export default function ContactPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl text-pink-700">Horário de Funcionamento</CardTitle>
+                <CardTitle className="text-xl text-blue-700">Horário de Funcionamento</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
@@ -306,7 +306,7 @@ export default function ContactPage() {
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle className="text-xl text-pink-700">Como Chegar</CardTitle>
+                <CardTitle className="text-xl text-blue-700">Como Chegar</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">

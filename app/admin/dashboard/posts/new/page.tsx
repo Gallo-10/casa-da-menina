@@ -38,7 +38,7 @@ export default function NewPostPage() {
           <ArrowLeft className="h-4 w-4 mr-2" />
           Voltar
         </Button>
-        <h1 className="text-2xl font-bold text-pink-700">Nova Postagem de Transparência</h1>
+        <h1 className="text-2xl font-bold text-blue-700">Nova Postagem de Transparência</h1>
       </div>
 
       <Card>
@@ -115,7 +115,7 @@ export default function NewPostPage() {
               <Button type="submit" variant="outline" disabled={isSubmitting}>
                 Salvar como Rascunho
               </Button>
-              <Button type="submit" className="bg-pink-600 hover:bg-pink-700" disabled={isSubmitting}>
+              <Button type="submit" className="bg-blue-600 hover:bg-blue-700" disabled={isSubmitting}>
                 {isSubmitting ? "Publicando..." : "Publicar"}
               </Button>
             </div>

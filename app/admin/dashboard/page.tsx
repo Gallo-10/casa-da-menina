@@ -76,12 +76,12 @@ export default function AdminDashboard() {
       <div className="flex">
         {/* Sidebar */}
         <div className="hidden md:flex flex-col w-64 bg-white border-r h-screen p-4">
-          <div className="text-xl font-bold text-pink-700 mb-8">Painel Administrativo</div>
+          <div className="text-xl font-bold text-blue-700 mb-8">Painel Administrativo</div>
           <nav className="space-y-2 flex-1">
             <Button
               variant={activeTab === "overview" ? "default" : "ghost"}
               className={
-                activeTab === "overview" ? "bg-pink-600 hover:bg-pink-700 w-full justify-start" : "w-full justify-start"
+                activeTab === "overview" ? "bg-blue-600 hover:bg-blue-700 w-full justify-start" : "w-full justify-start"
               }
               onClick={() => setActiveTab("overview")}
             >
@@ -91,7 +91,7 @@ export default function AdminDashboard() {
             <Button
               variant={activeTab === "posts" ? "default" : "ghost"}
               className={
-                activeTab === "posts" ? "bg-pink-600 hover:bg-pink-700 w-full justify-start" : "w-full justify-start"
+                activeTab === "posts" ? "bg-blue-600 hover:bg-blue-700 w-full justify-start" : "w-full justify-start"
               }
               onClick={() => setActiveTab("posts")}
             >
@@ -101,7 +101,7 @@ export default function AdminDashboard() {
             <Button
               variant={activeTab === "images" ? "default" : "ghost"}
               className={
-                activeTab === "images" ? "bg-pink-600 hover:bg-pink-700 w-full justify-start" : "w-full justify-start"
+                activeTab === "images" ? "bg-blue-600 hover:bg-blue-700 w-full justify-start" : "w-full justify-start"
               }
               onClick={() => setActiveTab("images")}
             >
@@ -118,7 +118,7 @@ export default function AdminDashboard() {
         {/* Main Content */}
         <div className="flex-1 p-6 overflow-auto">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-bold text-pink-700">Bem-vindo, Administrador</h1>
+            <h1 className="text-2xl font-bold text-blue-700">Bem-vindo, Administrador</h1>
             <div className="md:hidden">
               <Button variant="outline" onClick={handleLogout}>
                 <LogOut className="h-4 w-4" />
@@ -138,7 +138,7 @@ export default function AdminDashboard() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">Total de Postagens</CardTitle>
-                    <FileText className="h-4 w-4 text-pink-600" />
+                    <FileText className="h-4 w-4 text-blue-600" />
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">{transparencyPosts.length}</div>
@@ -151,7 +151,7 @@ export default function AdminDashboard() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">Imagens do Site</CardTitle>
-                    <ImageIcon className="h-4 w-4 text-pink-600" />
+                    <ImageIcon className="h-4 w-4 text-blue-600" />
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">{siteImages.length}</div>
@@ -173,7 +173,7 @@ export default function AdminDashboard() {
                   </CardHeader>
                   <CardContent className="space-y-2">
                     <Link href="/admin/dashboard/posts/new">
-                      <Button className="w-full bg-pink-600 hover:bg-pink-700">
+                      <Button className="w-full bg-blue-600 hover:bg-blue-700">
                         <Plus className="mr-2 h-4 w-4" /> Nova Postagem
                       </Button>
                     </Link>
@@ -193,7 +193,7 @@ export default function AdminDashboard() {
                   <div className="flex items-center justify-between">
                     <CardTitle>Postagens de Transparência</CardTitle>
                     <Link href="/admin/dashboard/posts/new">
-                      <Button className="bg-pink-600 hover:bg-pink-700">
+                      <Button className="bg-blue-600 hover:bg-blue-700">
                         <Plus className="mr-2 h-4 w-4" /> Nova Postagem
                       </Button>
                     </Link>
@@ -247,7 +247,7 @@ export default function AdminDashboard() {
                   <div className="flex items-center justify-between">
                     <CardTitle>Imagens do Site</CardTitle>
                     <Link href="/admin/dashboard/images/upload">
-                      <Button className="bg-pink-600 hover:bg-pink-700">
+                      <Button className="bg-blue-600 hover:bg-blue-700">
                         <Plus className="mr-2 h-4 w-4" /> Adicionar Imagem
                       </Button>
                     </Link>

@@ -41,11 +41,11 @@ export default function TransparencyPage() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="w-full py-12 md:py-24 lg:py-32 bg-pink-50">
+      <section className="w-full py-12 md:py-24 lg:py-32 bg-blue-50">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center space-y-4 text-center">
             <div className="space-y-2">
-              <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-pink-700">
+              <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-blue-700">
                 Portal da Transparência
               </h1>
               <p className="mx-auto max-w-[700px] text-gray-600 md:text-xl">
@@ -61,7 +61,7 @@ export default function TransparencyPage() {
       <section className="w-full py-6">
         <div className="container px-4 md:px-6">
           <div className="flex flex-wrap gap-2 justify-center">
-            <Button variant="outline" className="border-pink-600 text-pink-600 hover:bg-pink-100">
+            <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-100">
               Todos
             </Button>
             <Button variant="ghost">Financeiro</Button>
@@ -82,14 +82,14 @@ export default function TransparencyPage() {
                   <div className="text-sm text-gray-500 mb-2">
                     {post.date} • {post.type}
                   </div>
-                  <CardTitle className="text-xl text-pink-700">{post.title}</CardTitle>
+                  <CardTitle className="text-xl text-blue-700">{post.title}</CardTitle>
                 </CardHeader>
                 <CardContent className="flex-1">
                   <p className="text-gray-600">{post.excerpt}</p>
                 </CardContent>
                 <CardFooter>
                   <Link href={`/transparencia/${post.id}`} className="w-full">
-                    <Button variant="outline" className="w-full border-pink-600 text-pink-600 hover:bg-pink-100">
+                    <Button variant="outline" className="w-full border-yellow-500 text-yellow-600 hover:bg-yellow-100">
                       Ver Detalhes
                     </Button>
                   </Link>
