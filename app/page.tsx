@@ -15,7 +15,7 @@ export default function Home() {
               </h1>
               <p className="text-xl font-semibold text-blue-600 mb-2">São Francisco de Assis</p>
               <p className="mx-auto max-w-[700px] text-gray-600 md:text-xl">
-                Acolhendo e transformando vidas de meninas até 6 anos.
+                Educação Infantil
               </p>
             </div>
             <div className="space-x-4">
