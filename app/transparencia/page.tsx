@@ -1,3 +1,6 @@
+"use client"
+
+import { useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -38,6 +41,13 @@ const transparencyPosts = [
 ]
 
 export default function TransparencyPage() {
+  // Estado para armazenar o filtro atual
+  const [currentFilter, setCurrentFilter] = useState("Todos")
+
+  // Função para filtrar os posts com base no filtro selecionado
+  const filteredPosts =
+    currentFilter === "Todos" ? transparencyPosts : transparencyPosts.filter((post) => post.type === currentFilter)
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
@@ -61,13 +71,41 @@ export default function TransparencyPage() {
       <section className="w-full py-6">
         <div className="container px-4 md:px-6">
           <div className="flex flex-wrap gap-2 justify-center">
-            <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-100">
+            <Button
+              variant={currentFilter === "Todos" ? "outline" : "ghost"}
+              className={currentFilter === "Todos" ? "border-blue-600 text-blue-600 hover:bg-blue-100" : ""}
+              onClick={() => setCurrentFilter("Todos")}
+            >
               Todos
             </Button>
-            <Button variant="ghost">Financeiro</Button>
-            <Button variant="ghost">Projetos</Button>
-            <Button variant="ghost">Auditoria</Button>
-            <Button variant="ghost">Doações</Button>
+            <Button
+              variant={currentFilter === "Financeiro" ? "outline" : "ghost"}
+              className={currentFilter === "Financeiro" ? "border-blue-600 text-blue-600 hover:bg-blue-100" : ""}
+              onClick={() => setCurrentFilter("Financeiro")}
+            >
+              Financeiro
+            </Button>
+            <Button
+              variant={currentFilter === "Projetos" ? "outline" : "ghost"}
+              className={currentFilter === "Projetos" ? "border-blue-600 text-blue-600 hover:bg-blue-100" : ""}
+              onClick={() => setCurrentFilter("Projetos")}
+            >
+              Projetos
+            </Button>
+            <Button
+              variant={currentFilter === "Auditoria" ? "outline" : "ghost"}
+              className={currentFilter === "Auditoria" ? "border-blue-600 text-blue-600 hover:bg-blue-100" : ""}
+              onClick={() => setCurrentFilter("Auditoria")}
+            >
+              Auditoria
+            </Button>
+            <Button
+              variant={currentFilter === "Doações" ? "outline" : "ghost"}
+              className={currentFilter === "Doações" ? "border-blue-600 text-blue-600 hover:bg-blue-100" : ""}
+              onClick={() => setCurrentFilter("Doações")}
+            >
+              Doações
+            </Button>
           </div>
         </div>
       </section>
@@ -75,28 +113,35 @@ export default function TransparencyPage() {
       {/* Posts Section */}
       <section className="w-full py-12">
         <div className="container px-4 md:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {transparencyPosts.map((post) => (
-              <Card key={post.id} className="flex flex-col h-full">
-                <CardHeader>
-                  <div className="text-sm text-gray-500 mb-2">
-                    {post.date} • {post.type}
-                  </div>
-                  <CardTitle className="text-xl text-blue-700">{post.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-1">
-                  <p className="text-gray-600">{post.excerpt}</p>
-                </CardContent>
-                <CardFooter>
-                  <Link href={`/transparencia/${post.id}`} className="w-full">
-                    <Button variant="outline" className="w-full border-yellow-500 text-yellow-600 hover:bg-yellow-100">
-                      Ver Detalhes
-                    </Button>
-                  </Link>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
+          {filteredPosts.length === 0 ? (
+            <div className="text-center py-12">
+              <h3 className="text-xl font-medium text-gray-600">Nenhum documento encontrado para esta categoria.</h3>
+              <p className="text-gray-500 mt-2">Tente selecionar outra categoria ou volte para "Todos".</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredPosts.map((post) => (
+                <Card key={post.id} className="flex flex-col h-full">
+                  <CardHeader>
+                    <div className="text-sm text-gray-500 mb-2">
+                      {post.date} • {post.type}
+                    </div>
+                    <CardTitle className="text-xl text-blue-700">{post.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex-1">
+                    <p className="text-gray-600">{post.excerpt}</p>
+                  </CardContent>
+                  <CardFooter>
+                    <Link href={`/transparencia/${post.id}`} className="w-full">
+                      <Button variant="outline" className="w-full border-blue-600 text-blue-600 hover:bg-blue-100">
+                        Ver Detalhes
+                      </Button>
+                    </Link>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </div>

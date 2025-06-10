@@ -67,7 +67,7 @@ export default function AboutPage() {
             <Card>
               <CardContent className="p-6">
                 <div className="flex flex-col items-center space-y-4 text-center">
-                  <div className="h-16 w-16 rounded-full bg-yellow-200 flex items-center justify-center">
+                  <div className="h-16 w-16 rounded-full bg-blue-200 flex items-center justify-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -78,7 +78,7 @@ export default function AboutPage() {
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      className="text-yellow-700"
+                      className="text-blue-700"
                     >
                       <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                     </svg>
@@ -95,7 +95,7 @@ export default function AboutPage() {
             <Card>
               <CardContent className="p-6">
                 <div className="flex flex-col items-center space-y-4 text-center">
-                  <div className="h-16 w-16 rounded-full bg-yellow-200 flex items-center justify-center">
+                  <div className="h-16 w-16 rounded-full bg-blue-200 flex items-center justify-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -106,7 +106,7 @@ export default function AboutPage() {
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      className="text-yellow-700"
+                      className="text-blue-700"
                     >
                       <circle cx="12" cy="12" r="10"></circle>
                       <path d="M12 6v6l4 2"></path>
@@ -123,7 +123,7 @@ export default function AboutPage() {
             <Card>
               <CardContent className="p-6">
                 <div className="flex flex-col items-center space-y-4 text-center">
-                  <div className="h-16 w-16 rounded-full bg-yellow-200 flex items-center justify-center">
+                  <div className="h-16 w-16 rounded-full bg-blue-200 flex items-center justify-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -134,7 +134,7 @@ export default function AboutPage() {
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      className="text-yellow-700"
+                      className="text-blue-700"
                     >
                       <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
                       <path d="M2 17l10 5 10-5"></path>
@@ -279,7 +279,7 @@ export default function AboutPage() {
             </div>
             <div className="space-x-4">
               <Link href="/doar">
-                <Button className="bg-yellow-500 hover:bg-yellow-600 text-white">Fazer uma Doação</Button>
+                <Button className="bg-blue-600 hover:bg-blue-700">Fazer uma Doação</Button>
               </Link>
               <Link href="/contato">
                 <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-100">

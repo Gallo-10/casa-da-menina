@@ -13,8 +13,9 @@ export default function Home() {
               <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl text-blue-700">
                 Casa da Menina
               </h1>
+              <p className="text-xl font-semibold text-blue-600 mb-2">São Francisco de Assis</p>
               <p className="mx-auto max-w-[700px] text-gray-600 md:text-xl">
-                Acolhendo e transformando vidas de meninas até 10 anos em situação de vulnerabilidade.
+                Acolhendo e transformando vidas de meninas até 6 anos.
               </p>
             </div>
             <div className="space-x-4">
@@ -22,7 +23,7 @@ export default function Home() {
                 <Button className="bg-blue-600 hover:bg-blue-700">Conheça Nossa Missão</Button>
               </Link>
               <Link href="/transparencia">
-                <Button variant="outline" className="border-yellow-500 text-yellow-600 hover:bg-yellow-100">
+                <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-100">
                   Portal da Transparência
                 </Button>
               </Link>
@@ -38,9 +39,9 @@ export default function Home() {
             <div className="space-y-4">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-blue-700">Quem Somos</h2>
               <p className="text-gray-600">
-                A Casa da Menina é uma organização sem fins lucrativos dedicada ao acolhimento de meninas órfãs de até
-                10 anos. Nosso objetivo é proporcionar um ambiente seguro, acolhedor e estimulante para o
-                desenvolvimento integral dessas crianças.
+                A Casa da Menina é uma organização sem fins lucrativos dedicada ao acolhimento de meninas até 6 anos.
+                Nosso objetivo é proporcionar um ambiente seguro, acolhedor e estimulante para o desenvolvimento
+                integral dessas crianças.
               </p>
               <p className="text-gray-600">
                 Trabalhamos com uma equipe multidisciplinar de profissionais comprometidos com o bem-estar e o futuro
@@ -82,7 +83,7 @@ export default function Home() {
             <Card>
               <CardContent className="p-6">
                 <div className="flex flex-col items-center space-y-2 text-center">
-                  <div className="h-16 w-16 rounded-full bg-yellow-100 flex items-center justify-center">
+                  <div className="h-16 w-16 rounded-full bg-blue-100 flex items-center justify-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -93,7 +94,7 @@ export default function Home() {
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      className="text-yellow-600"
+                      className="text-blue-600"
                     >
                       <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                       <circle cx="9" cy="7" r="4"></circle>
@@ -111,7 +112,7 @@ export default function Home() {
             <Card>
               <CardContent className="p-6">
                 <div className="flex flex-col items-center space-y-2 text-center">
-                  <div className="h-16 w-16 rounded-full bg-yellow-100 flex items-center justify-center">
+                  <div className="h-16 w-16 rounded-full bg-blue-100 flex items-center justify-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -122,7 +123,7 @@ export default function Home() {
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      className="text-yellow-600"
+                      className="text-blue-600"
                     >
                       <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
                       <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
@@ -139,7 +140,7 @@ export default function Home() {
             <Card>
               <CardContent className="p-6">
                 <div className="flex flex-col items-center space-y-2 text-center">
-                  <div className="h-16 w-16 rounded-full bg-yellow-100 flex items-center justify-center">
+                  <div className="h-16 w-16 rounded-full bg-blue-100 flex items-center justify-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -150,7 +151,7 @@ export default function Home() {
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      className="text-yellow-600"
+                      className="text-blue-600"
                     >
                       <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                     </svg>
@@ -179,7 +180,7 @@ export default function Home() {
             </div>
             <div className="space-x-4">
               <Link href="/doar">
-                <Button className="bg-yellow-500 hover:bg-yellow-600 text-white">Fazer uma Doação</Button>
+                <Button className="bg-blue-600 hover:bg-blue-700">Fazer uma Doação</Button>
               </Link>
               <Link href="/voluntariado">
                 <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-100">

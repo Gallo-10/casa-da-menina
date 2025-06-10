@@ -205,7 +205,7 @@ export default function ProgramsPage() {
               <Card key={index} className="overflow-hidden">
                 <CardHeader className="bg-blue-50">
                   <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-yellow-200 flex items-center justify-center text-yellow-700">
+                    <div className="h-12 w-12 rounded-full bg-blue-200 flex items-center justify-center text-blue-700">
                       {program.icon}
                     </div>
                     <CardTitle className="text-2xl text-blue-700">{program.title}</CardTitle>
@@ -221,7 +221,7 @@ export default function ProgramsPage() {
                       <ul className="space-y-2">
                         {program.features.map((feature, featureIndex) => (
                           <li key={featureIndex} className="flex items-start gap-2">
-                            <div className="h-2 w-2 rounded-full bg-yellow-400 mt-2 flex-shrink-0"></div>
+                            <div className="h-2 w-2 rounded-full bg-blue-400 mt-2 flex-shrink-0"></div>
                             <span className="text-gray-600">{feature}</span>
                           </li>
                         ))}
@@ -288,7 +288,7 @@ export default function ProgramsPage() {
             </div>
             <div className="space-x-4">
               <Link href="/doar">
-                <Button className="bg-yellow-500 hover:bg-yellow-600 text-white">Fazer uma Doação</Button>
+                <Button className="bg-blue-600 hover:bg-blue-700">Fazer uma Doação</Button>
               </Link>
               <Link href="/voluntariado">
                 <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-100">
