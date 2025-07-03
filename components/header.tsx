@@ -23,9 +23,6 @@ export default function Header() {
           <Link href="/sobre" className="text-sm font-medium hover:underline underline-offset-4">
             Sobre Nós
           </Link>
-          <Link href="/programas" className="text-sm font-medium hover:underline underline-offset-4">
-            Programas
-          </Link>
           <Link href="/transparencia" className="text-sm font-medium hover:underline underline-offset-4">
             Transparência
           </Link>

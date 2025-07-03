@@ -14,8 +14,7 @@ export default function AboutPage() {
                 Sobre a Casa da Menina
               </h1>
               <p className="mx-auto max-w-[700px] text-gray-600 md:text-xl">
-                Conheça nossa história, missão e valores que nos guiam no cuidado com meninas em situação de
-                vulnerabilidade.
+                Conheça nossa história, missão e valores que nos guiam no cuidado com as crianças.
               </p>
             </div>
           </div>
@@ -29,17 +28,20 @@ export default function AboutPage() {
             <div className="space-y-4">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-blue-700">Nossa História</h2>
               <p className="text-gray-600">
-                A Casa da Menina foi fundada em 2010 por um grupo de profissionais da área social que identificaram a
-                necessidade de um espaço especializado no acolhimento de meninas órfãs de até 10 anos. Nossa jornada
-                começou com o sonho de proporcionar um ambiente seguro e acolhedor para essas crianças.
+                A Casa da Menina São Francisco de Assis é uma entidade sem fins lucrativos, fundada em 10 de abril de 1962 por Floriano de Oliveira Garcez (Monsenhor Floriano).
+                Está localizada à Rua Dr. Luiz Pizza, 165 – Centro – Assis/SP.
+                Seus recursos são provenientes da participação voluntária dos pais, de contribuições da sociedade e convênios junto à Prefeitura Municipal de Assis.
               </p>
               <p className="text-gray-600">
-                Ao longo dos anos, já acolhemos mais de 150 meninas, oferecendo não apenas um lar temporário, mas também
-                oportunidades de desenvolvimento integral, educação de qualidade e preparação para um futuro promissor.
+                Tem como principal finalidade prestar atendimento a crianças de 4 meses a 5 anos, em período integral ou parcial,
+                suprindo suas necessidades individuais tanto nos aspectos físicos como cognitivos, de acordo com a faixa etária.
+                O corpo funcional é constituído por quem entende de infância, profissionais da educação com experiência e domínio
+                no processo de desenvolvimento e aprendizagem.
               </p>
               <p className="text-gray-600">
-                Hoje, somos reconhecidos como uma referência no atendimento especializado a meninas em situação de
-                vulnerabilidade, sempre priorizando o bem-estar, a dignidade e os direitos de cada criança.
+                A alimentação possui uma atenção rigorosa, com escolhas saudáveis e acompanhadas por nutricionista em tempo integral.
+                As matrículas são efetuadas de acordo com a demanda e capacidade de atendimento. Atende hoje a aproximadamente 600
+                crianças.
               </p>
             </div>
             <div className="flex justify-center">
@@ -85,9 +87,9 @@ export default function AboutPage() {
                   </div>
                   <h3 className="text-xl font-bold text-blue-700">Missão</h3>
                   <p className="text-gray-600">
-                    Acolher, proteger e promover o desenvolvimento integral de meninas órfãs de até 10 anos, oferecendo
-                    um ambiente seguro, amoroso e estimulante que favoreça seu crescimento saudável e sua preparação
-                    para a vida em sociedade.
+                    Prestar atendimento educacional e assistencial a crianças de 4 meses a 5 anos, em período integral
+                    ou parcial, suprindo suas necessidades físicas, cognitivas e emocionais, promovendo seu desenvolvimento
+                    integral com amor, cuidado e profissionalismo.
                   </p>
                 </div>
               </CardContent>
@@ -114,8 +116,9 @@ export default function AboutPage() {
                   </div>
                   <h3 className="text-xl font-bold text-blue-700">Visão</h3>
                   <p className="text-gray-600">
-                    Ser reconhecida como uma instituição de excelência no acolhimento de meninas, contribuindo para a
-                    formação de cidadãs conscientes, autônomas e preparadas para construir um futuro próspero e feliz.
+                    Ser reconhecida como referência em educação infantil na região de Assis, formando cidadãos
+                    conscientes e preparados para o futuro, através de um trabalho pedagógico de excelência e
+                    cuidado integral desde os primeiros anos de vida.
                   </p>
                 </div>
               </CardContent>
@@ -143,12 +146,12 @@ export default function AboutPage() {
                   </div>
                   <h3 className="text-xl font-bold text-blue-700">Valores</h3>
                   <ul className="text-gray-600 text-left space-y-1">
-                    <li>• Amor e cuidado</li>
-                    <li>• Respeito à dignidade</li>
-                    <li>• Transparência</li>
-                    <li>• Responsabilidade social</li>
+                    <li>• Educação de qualidade</li>
+                    <li>• Cuidado e proteção</li>
                     <li>• Desenvolvimento integral</li>
-                    <li>• Ética e compromisso</li>
+                    <li>• Alimentação saudável</li>
+                    <li>• Respeito à individualidade</li>
+                    <li>• Compromisso social</li>
                   </ul>
                 </div>
               </CardContent>
@@ -158,18 +161,18 @@ export default function AboutPage() {
       </section>
 
       {/* Nossa Equipe */}
-      <section className="w-full py-12 md:py-24 lg:py-32">
+      <section className="w-full py-12 md:py-24 lg:py-32 ">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center space-y-4 text-center mb-12">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-blue-700">Nossa Equipe</h2>
             <p className="mx-auto max-w-[700px] text-gray-600 md:text-xl">
-              Profissionais dedicados e qualificados trabalham juntos para oferecer o melhor cuidado às nossas meninas.
+              Profissionais dedicados trabalham juntos para oferecer o melhor cuidado e educação às nossas crianças.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card>
               <CardContent className="p-6 text-center">
-                <div className="w-20 h-20 rounded-full bg-blue-100 mx-auto mb-4 flex items-center justify-center">
+                <div className="w-20 h-20 rounded-full bg-blue-200 mx-auto mb-4 flex items-center justify-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="32"
@@ -180,68 +183,20 @@ export default function AboutPage() {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="text-blue-600"
-                  >
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                  </svg>
-                </div>
-                <h3 className="font-bold text-blue-700">Assistentes Sociais</h3>
-                <p className="text-sm text-gray-600">Acompanhamento e suporte social especializado</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-6 text-center">
-                <div className="w-20 h-20 rounded-full bg-blue-100 mx-auto mb-4 flex items-center justify-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="32"
-                    height="32"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="text-blue-600"
-                  >
-                    <path d="M9 12l2 2 4-4"></path>
-                    <path d="M21 12c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1z"></path>
-                    <path d="M3 12c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1z"></path>
-                    <path d="M12 21c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1z"></path>
-                    <path d="M12 3c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1z"></path>
-                  </svg>
-                </div>
-                <h3 className="font-bold text-blue-700">Psicólogos</h3>
-                <p className="text-sm text-gray-600">Cuidado emocional e desenvolvimento psicológico</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-6 text-center">
-                <div className="w-20 h-20 rounded-full bg-blue-100 mx-auto mb-4 flex items-center justify-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="32"
-                    height="32"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="text-blue-600"
+                    className="text-blue-700"
                   >
                     <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
                     <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
                   </svg>
                 </div>
-                <h3 className="font-bold text-blue-700">Pedagogos</h3>
-                <p className="text-sm text-gray-600">Apoio educacional e desenvolvimento cognitivo</p>
+                <h3 className="font-bold text-blue-700">Professoras</h3>
+                <p className="text-sm text-gray-600 mb-2">Professoras especializadas em educação infantil</p>
+                <p className="text-xs text-gray-500">Desenvolvimento pedagógico e educacional das crianças</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="p-6 text-center">
-                <div className="w-20 h-20 rounded-full bg-blue-100 mx-auto mb-4 flex items-center justify-center">
+                <div className="w-20 h-20 rounded-full bg-blue-200 mx-auto mb-4 flex items-center justify-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="32"
@@ -252,13 +207,64 @@ export default function AboutPage() {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="text-blue-600"
+                    className="text-blue-700"
+                  >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </div>
+                <h3 className="font-bold text-blue-700">A.D.I e Monitoras</h3>
+                <p className="text-sm text-gray-600 mb-2">Auxiliares de Desenvolvimento Infantil e Monitoras</p>
+                <p className="text-xs text-gray-500">Cuidado direto e acompanhamento diário das crianças</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-6 text-center">
+                <div className="w-20 h-20 rounded-full bg-blue-200 mx-auto mb-4 flex items-center justify-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-blue-700"
+                  >
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                </div>
+                <h3 className="font-bold text-blue-700">Equipe Administrativa</h3>
+                <p className="text-sm text-gray-600 mb-2">Diretora, Coordenadora, Gerência e equipe de apoio</p>
+                <p className="text-xs text-gray-500">Gestão, secretaria, recepção e suporte administrativo</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-6 text-center">
+                <div className="w-20 h-20 rounded-full bg-blue-200 mx-auto mb-4 flex items-center justify-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-blue-700"
                   >
                     <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
                   </svg>
                 </div>
-                <h3 className="font-bold text-blue-700">Cuidadores</h3>
-                <p className="text-sm text-gray-600">Cuidado diário e acompanhamento 24 horas</p>
+                <h3 className="font-bold text-blue-700">Equipe de Apoio</h3>
+                <p className="text-sm text-gray-600 mb-2">Nutricionista, cozinha, limpeza e educação física</p>
+                <p className="text-xs text-gray-500">Alimentação, saúde, higiene e atividades complementares</p>
               </CardContent>
             </Card>
           </div>
@@ -278,13 +284,8 @@ export default function AboutPage() {
               </p>
             </div>
             <div className="space-x-4">
-              <Link href="/doar">
-                <Button className="bg-blue-600 hover:bg-blue-700">Fazer uma Doação</Button>
-              </Link>
               <Link href="/contato">
-                <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-100">
-                  Entre em Contato
-                </Button>
+                <Button className="bg-blue-600 hover:bg-blue-700">Fazer uma Doação</Button>
               </Link>
             </div>
           </div>

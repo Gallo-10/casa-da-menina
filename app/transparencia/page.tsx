@@ -1,52 +1,40 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-
-// Simulação de posts de transparência
-const transparencyPosts = [
-  {
-    id: 1,
-    title: "Relatório Financeiro - 1º Trimestre 2025",
-    date: "01/04/2025",
-    excerpt:
-      "Apresentação das receitas e despesas do primeiro trimestre de 2025, com detalhamento das doações recebidas e investimentos realizados.",
-    type: "Financeiro",
-  },
-  {
-    id: 2,
-    title: "Prestação de Contas - Projeto Educação em Foco",
-    date: "15/03/2025",
-    excerpt:
-      "Detalhamento dos recursos aplicados no projeto Educação em Foco, que beneficiou 25 meninas com aulas de reforço escolar.",
-    type: "Projetos",
-  },
-  {
-    id: 3,
-    title: "Auditoria Externa - Exercício 2024",
-    date: "28/02/2025",
-    excerpt:
-      "Resultado da auditoria externa realizada pela empresa XYZ Auditores, referente ao exercício fiscal de 2024.",
-    type: "Auditoria",
-  },
-  {
-    id: 4,
-    title: "Doações Recebidas - Campanha de Inverno",
-    date: "10/02/2025",
-    excerpt: "Relação de doações recebidas durante a Campanha de Inverno e como os recursos foram aplicados.",
-    type: "Doações",
-  },
-]
+import { getTransparencyPosts, getTransparencyPostsByCategory } from "@/lib/transparency-api"
+import type { TransparencyPost, TransparencyCategory } from "@/lib/types/transparency"
 
 export default function TransparencyPage() {
-  // Estado para armazenar o filtro atual
-  const [currentFilter, setCurrentFilter] = useState("Todos")
+  const [currentFilter, setCurrentFilter] = useState<TransparencyCategory>("Todos")
+  const [posts, setPosts] = useState<TransparencyPost[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  // Função para filtrar os posts com base no filtro selecionado
-  const filteredPosts =
-    currentFilter === "Todos" ? transparencyPosts : transparencyPosts.filter((post) => post.type === currentFilter)
+  // Buscar posts quando o componente montar ou o filtro mudar
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        const fetchedPosts = await getTransparencyPostsByCategory(currentFilter)
+        setPosts(fetchedPosts)
+      } catch (err) {
+        setError("Erro ao carregar documentos. Tente novamente.")
+        console.error("Erro ao buscar posts:", err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchPosts()
+  }, [currentFilter])
+
+  const handleFilterChange = (filter: TransparencyCategory) => {
+    setCurrentFilter(filter)
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -74,37 +62,51 @@ export default function TransparencyPage() {
             <Button
               variant={currentFilter === "Todos" ? "outline" : "ghost"}
               className={currentFilter === "Todos" ? "border-blue-600 text-blue-600 hover:bg-blue-100" : ""}
-              onClick={() => setCurrentFilter("Todos")}
+              onClick={() => handleFilterChange("Todos")}
             >
               Todos
             </Button>
             <Button
-              variant={currentFilter === "Financeiro" ? "outline" : "ghost"}
-              className={currentFilter === "Financeiro" ? "border-blue-600 text-blue-600 hover:bg-blue-100" : ""}
-              onClick={() => setCurrentFilter("Financeiro")}
+              variant={currentFilter === "Documentos Constitutivos" ? "outline" : "ghost"}
+              className={currentFilter === "Documentos Constitutivos" ? "border-blue-600 text-blue-600 hover:bg-blue-100" : ""}
+              onClick={() => handleFilterChange("Documentos Constitutivos")}
             >
-              Financeiro
+              Documentos Constitutivos
             </Button>
             <Button
-              variant={currentFilter === "Projetos" ? "outline" : "ghost"}
-              className={currentFilter === "Projetos" ? "border-blue-600 text-blue-600 hover:bg-blue-100" : ""}
-              onClick={() => setCurrentFilter("Projetos")}
+              variant={currentFilter === "Organização Administrativa" ? "outline" : "ghost"}
+              className={currentFilter === "Organização Administrativa" ? "border-blue-600 text-blue-600 hover:bg-blue-100" : ""}
+              onClick={() => handleFilterChange("Organização Administrativa")}
             >
-              Projetos
+              Organização Administrativa
             </Button>
             <Button
-              variant={currentFilter === "Auditoria" ? "outline" : "ghost"}
-              className={currentFilter === "Auditoria" ? "border-blue-600 text-blue-600 hover:bg-blue-100" : ""}
-              onClick={() => setCurrentFilter("Auditoria")}
+              variant={currentFilter === "Contratos Vigentes" ? "outline" : "ghost"}
+              className={currentFilter === "Contratos Vigentes" ? "border-blue-600 text-blue-600 hover:bg-blue-100" : ""}
+              onClick={() => handleFilterChange("Contratos Vigentes")}
             >
-              Auditoria
+              Contratos Vigentes
             </Button>
             <Button
-              variant={currentFilter === "Doações" ? "outline" : "ghost"}
-              className={currentFilter === "Doações" ? "border-blue-600 text-blue-600 hover:bg-blue-100" : ""}
-              onClick={() => setCurrentFilter("Doações")}
+              variant={currentFilter === "Relação dos Fornecedores" ? "outline" : "ghost"}
+              className={currentFilter === "Relação dos Fornecedores" ? "border-blue-600 text-blue-600 hover:bg-blue-100" : ""}
+              onClick={() => handleFilterChange("Relação dos Fornecedores")}
             >
-              Doações
+              Relação dos Fornecedores
+            </Button>
+            <Button
+              variant={currentFilter === "Mural de Publicações" ? "outline" : "ghost"}
+              className={currentFilter === "Mural de Publicações" ? "border-blue-600 text-blue-600 hover:bg-blue-100" : ""}
+              onClick={() => handleFilterChange("Mural de Publicações")}
+            >
+              Mural de Publicações
+            </Button>
+            <Button
+              variant={currentFilter === "Relação das Parcerias" ? "outline" : "ghost"}
+              className={currentFilter === "Relação das Parcerias" ? "border-blue-600 text-blue-600 hover:bg-blue-100" : ""}
+              onClick={() => handleFilterChange("Relação das Parcerias")}
+            >
+              Relação das Parcerias
             </Button>
           </div>
         </div>
@@ -113,14 +115,23 @@ export default function TransparencyPage() {
       {/* Posts Section */}
       <section className="w-full py-12">
         <div className="container px-4 md:px-6">
-          {filteredPosts.length === 0 ? (
+          {loading ? (
+            <div className="text-center py-12">
+              <h3 className="text-xl font-medium text-gray-600">Carregando documentos...</h3>
+            </div>
+          ) : error ? (
+            <div className="text-center py-12">
+              <h3 className="text-xl font-medium text-red-600">Erro ao carregar</h3>
+              <p className="text-gray-500 mt-2">{error}</p>
+            </div>
+          ) : posts.length === 0 ? (
             <div className="text-center py-12">
               <h3 className="text-xl font-medium text-gray-600">Nenhum documento encontrado para esta categoria.</h3>
               <p className="text-gray-500 mt-2">Tente selecionar outra categoria ou volte para "Todos".</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredPosts.map((post) => (
+              {posts.map((post) => (
                 <Card key={post.id} className="flex flex-col h-full">
                   <CardHeader>
                     <div className="text-sm text-gray-500 mb-2">

@@ -15,7 +15,7 @@ export default function Home() {
               </h1>
               <p className="text-xl font-semibold text-blue-600 mb-2">São Francisco de Assis</p>
               <p className="mx-auto max-w-[700px] text-gray-600 md:text-xl">
-                Educação Infantil
+                Acolher, Proteger e Educar para a Vida
               </p>
             </div>
             <div className="space-x-4">
@@ -39,13 +39,12 @@ export default function Home() {
             <div className="space-y-4">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-blue-700">Quem Somos</h2>
               <p className="text-gray-600">
-                A Casa da Menina é uma organização sem fins lucrativos dedicada ao acolhimento de meninas até 6 anos.
-                Nosso objetivo é proporcionar um ambiente seguro, acolhedor e estimulante para o desenvolvimento
-                integral dessas crianças.
+                A Casa da Menina São Francisco de Assis é uma entidade sem fins lucrativos, fundada em 10 de abril de 1962 por Floriano de Oliveira Garcez (Monsenhor Floriano). 
+                Está localizada à Rua Dr. Luiz Pizza, 165 – Centro – Assis/SP.
               </p>
               <p className="text-gray-600">
-                Trabalhamos com uma equipe multidisciplinar de profissionais comprometidos com o bem-estar e o futuro
-                das nossas meninas.
+                Tem como principal finalidade prestar atendimento a crianças de 4 meses a 5 anos, em período integral ou parcial, 
+                suprindo suas necessidades individuais tanto nos aspectos físicos como cognitivos, de acordo com a faixa etária.
               </p>
               <Link href="/sobre">
                 <Button variant="link" className="text-blue-600 p-0">

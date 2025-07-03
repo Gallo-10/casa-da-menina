@@ -8,22 +8,43 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import CryptoJS from "crypto-js"
+import { AuthService } from "@/lib/auth-service"
+import { AuthError } from "@/lib/errors/auth-error"
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
+    setIsLoading(true)
 
-    // Simulação de login - em produção, isso seria validado no backend
-    if (email === "admin@casadamenina.org" && password === "admin123") {
+    try {
+      // Gera o hash MD5 da senha
+      const passwordHash = CryptoJS.MD5(password).toString()
+
+      // Chama o serviço de autenticação
+      await AuthService.login(email, passwordHash)
+
+      // Login bem-sucedido, redireciona para o dashboard
       router.push("/admin/dashboard")
-    } else {
-      setError("Email ou senha inválidos. Tente novamente.")
+
+    } catch (error) {
+      if (error instanceof AuthError) {
+        // Erro conhecido do serviço de autenticação
+        setError(error.message)
+      } else {
+        // Erro inesperado
+        console.error('Erro inesperado no login:', error)
+        setError("Erro inesperado. Tente novamente.")
+      }
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -47,6 +68,7 @@ export default function AdminLoginPage() {
                 placeholder="admin@casadamenina.org"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={isLoading}
                 required
               />
             </div>
@@ -55,15 +77,21 @@ export default function AdminLoginPage() {
               <Input
                 id="password"
                 type="password"
+                placeholder="Digite sua senha"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
                 required
               />
             </div>
           </CardContent>
           <CardFooter>
-            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
-              Entrar
+            <Button
+              type="submit"
+              className="w-full bg-blue-600 hover:bg-blue-700"
+              disabled={isLoading}
+            >
+              {isLoading ? "Entrando..." : "Entrar"}
             </Button>
           </CardFooter>
         </form>
