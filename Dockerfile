@@ -1,48 +1,26 @@
-# Dockerfile para Casa da Menina - Next.js Application
-# Versão simplificada para evitar problemas com pnpm
+FROM node:lts-alpine AS builder
 
-FROM node:20-alpine AS base
-
-# Instalar dependências necessárias
-RUN apk add --no-cache libc6-compat curl
+# Set working directory
 WORKDIR /app
 
-# Copiar arquivos de configuração
-COPY package.json pnpm-lock.yaml* ./
+# Copy package files
+COPY package*.json ./
 
-# Instalar pnpm usando corepack (método recomendado)
-RUN corepack enable pnpm
+# Install dependencies
+RUN npm install
 
-# Instalar dependências
-RUN pnpm install --frozen-lockfile
-
-# Copiar código fonte
+# Copy source code
 COPY . .
 
-# Desabilitar telemetria do Next.js
+# Disable Next.js telemetry
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Build da aplicação
-RUN pnpm build
+# Build the application
+RUN npm run build
 
-# Criar usuário não-root para segurança
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+# Expose the port Next.js runs on
+EXPOSE 8080
+ENV PORT=8080
 
-# Configurar permissões
-RUN chown -R nextjs:nodejs /app
-
-# Configurar variáveis de ambiente
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
-
-# Expor porta
-EXPOSE 3000
-
-# Mudar para usuário não-root
-USER nextjs
-
-# Comando para iniciar a aplicação
-CMD ["pnpm", "start"]
+# Command to run the application
+CMD ["npm", "start"]
