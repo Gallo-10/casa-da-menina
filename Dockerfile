@@ -8,17 +8,17 @@ FROM node:20-alpine AS base
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
+# Instalar pnpm globalmente
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
 # Copiar arquivos de dependências
 COPY package.json pnpm-lock.yaml* ./
-
-# Instalar pnpm globalmente
-RUN npm install -g pnpm
 
 # Stage 2: Dependencies
 FROM base AS deps
 
 # Instalar dependências de produção e desenvolvimento
-RUN pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Stage 3: Builder
 FROM base AS builder
@@ -31,7 +31,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Desabilitar telemetria do Next.js durante o build
-ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # Build da aplicação
 RUN pnpm build
@@ -39,6 +39,9 @@ RUN pnpm build
 # Stage 4: Runner (imagem final)
 FROM node:20-alpine AS runner
 WORKDIR /app
+
+# Instalar curl para health checks
+RUN apk add --no-cache curl
 
 # Criar usuário não-root para segurança
 RUN addgroup --system --gid 1001 nodejs
@@ -52,10 +55,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 # Configurar variáveis de ambiente
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
-ENV PORT 3000
-ENV HOSTNAME "0.0.0.0"
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 
 # Expor porta
 EXPOSE 3000
