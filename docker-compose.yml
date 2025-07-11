@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+  casa-da-menina:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+      # Adicione aqui suas variáveis de ambiente de produção
+      # - NEXT_PUBLIC_MS_ADMIN_URL=${NEXT_PUBLIC_MS_ADMIN_URL}
+    restart: unless-stopped
+    networks:
+      - casa-da-menina-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Serviço para desenvolvimento (opcional)
+  casa-da-menina-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3001:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      - NEXT_TELEMETRY_DISABLED=1
+    command: pnpm dev
+    profiles:
+      - dev
+    networks:
+      - casa-da-menina-network
+
+networks:
+  casa-da-menina-network:
+    driver: bridge
+
+# Volumes para persistir dados (se necessário no futuro)
+volumes:
+  casa-da-menina-data:
