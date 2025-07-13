@@ -8,7 +8,7 @@ export default function Footer() {
           <div className="space-y-3">
             <h3 className="text-lg font-medium text-blue-600">Casa da Menina</h3>
             <p className="text-sm text-gray-500">
-              ONG dedicada ao acolhimento de meninas órfãs de até 10 anos em situação de vulnerabilidade.
+              Entidade sem fins  lucrativos prestando atendimento a crianças de 4 meses a 5 anos, em período integral ou parcial.
             </p>
           </div>
           <div className="space-y-3">
@@ -25,11 +25,6 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/programas" className="text-sm text-gray-500 hover:text-blue-600">
-                  Programas
-                </Link>
-              </li>
-              <li>
                 <Link href="/transparencia" className="text-sm text-gray-500 hover:text-blue-600">
                   Transparência
                 </Link>
@@ -40,17 +35,12 @@ export default function Footer() {
             <h3 className="text-lg font-medium">Como Ajudar</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/doar" className="text-sm text-gray-500 hover:text-blue-600">
+                <Link href="/contato" className="text-sm text-gray-500 hover:text-blue-600">
                   Fazer uma Doação
                 </Link>
               </li>
               <li>
-                <Link href="/voluntariado" className="text-sm text-gray-500 hover:text-blue-600">
-                  Seja Voluntário
-                </Link>
-              </li>
-              <li>
-                <Link href="/parcerias" className="text-sm text-gray-500 hover:text-blue-600">
+                <Link href="/contato" className="text-sm text-gray-500 hover:text-blue-600">
                   Parcerias
                 </Link>
               </li>

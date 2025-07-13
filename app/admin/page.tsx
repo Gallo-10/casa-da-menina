@@ -25,21 +25,16 @@ export default function AdminLoginPage() {
     setIsLoading(true)
 
     try {
-      // Gera o hash MD5 da senha
       const passwordHash = CryptoJS.MD5(password).toString()
 
-      // Chama o serviço de autenticação
       await AuthService.login(email, passwordHash)
 
-      // Login bem-sucedido, redireciona para o dashboard
       router.push("/admin/dashboard")
 
     } catch (error) {
       if (error instanceof AuthError) {
-        // Erro conhecido do serviço de autenticação
         setError(error.message)
       } else {
-        // Erro inesperado
         console.error('Erro inesperado no login:', error)
         setError("Erro inesperado. Tente novamente.")
       }

@@ -19,28 +19,24 @@ export default function AdminDashboard() {
       title: "Relatório Financeiro - 1º Trimestre 2025",
       date: "01/04/2025",
       type: "Financeiro",
-      status: "Publicado",
     },
     {
       id: 2,
       title: "Prestação de Contas - Projeto Educação em Foco",
       date: "15/03/2025",
       type: "Projetos",
-      status: "Publicado",
     },
     {
       id: 3,
       title: "Auditoria Externa - Exercício 2024",
       date: "28/02/2025",
       type: "Auditoria",
-      status: "Publicado",
     },
     {
       id: 4,
       title: "Doações Recebidas - Campanha de Inverno",
       date: "10/02/2025",
       type: "Doações",
-      status: "Rascunho",
     },
   ]
 
@@ -67,7 +63,6 @@ export default function AdminDashboard() {
   ]
 
   const handleLogout = () => {
-    // Em produção, isso faria logout no backend
     router.push("/admin")
   }
 
@@ -142,10 +137,6 @@ export default function AdminDashboard() {
                   </CardHeader>
                   <CardContent>
                     <div className="text-2xl font-bold">{transparencyPosts.length}</div>
-                    <p className="text-xs text-gray-500">
-                      {transparencyPosts.filter((p) => p.status === "Publicado").length} publicadas,{" "}
-                      {transparencyPosts.filter((p) => p.status === "Rascunho").length} rascunhos
-                    </p>
                   </CardContent>
                 </Card>
                 <Card>
@@ -208,7 +199,6 @@ export default function AdminDashboard() {
                           <th className="text-left py-3 px-2">Título</th>
                           <th className="text-left py-3 px-2">Data</th>
                           <th className="text-left py-3 px-2">Tipo</th>
-                          <th className="text-left py-3 px-2">Status</th>
                           <th className="text-right py-3 px-2">Ações</th>
                         </tr>
                       </thead>
@@ -218,13 +208,6 @@ export default function AdminDashboard() {
                             <td className="py-3 px-2">{post.title}</td>
                             <td className="py-3 px-2">{post.date}</td>
                             <td className="py-3 px-2">{post.type}</td>
-                            <td className="py-3 px-2">
-                              <span
-                                className={`inline-block px-2 py-1 text-xs rounded ${post.status === "Publicado" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"}`}
-                              >
-                                {post.status}
-                              </span>
-                            </td>
                             <td className="py-3 px-2 text-right">
                               <Link href={`/admin/dashboard/posts/edit/${post.id}`}>
                                 <Button variant="ghost" size="sm">

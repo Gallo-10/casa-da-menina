@@ -178,7 +178,7 @@ export default function Home() {
               </p>
             </div>
             <div className="space-x-4">
-              <Link href="/doar">
+              <Link href="/contato">
                 <Button className="bg-blue-600 hover:bg-blue-700">Fazer uma Doação</Button>
               </Link>
               <Link href="/voluntariado">
