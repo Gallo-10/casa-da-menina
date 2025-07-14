@@ -1,4 +1,5 @@
 import { ApiClient } from '../http/client'
+import { API_CONFIG } from '../config/api'
 import type { TransparencyPost, TransparencyCategory, TransparencyDocumentData } from '../types/transparency'
 
 export interface CreatePostRequest {
@@ -32,7 +33,7 @@ export class PostsService {
 
   // Buscar todos os posts
   static async getAllPosts(): Promise<TransparencyPost[]> {
-    const apiPosts = await ApiClient.get<any[]>('/postagens')
+    const apiPosts = await ApiClient.get<any[]>(API_CONFIG.ENDPOINTS.POSTS.LIST)
     return apiPosts.map(post => this.mapApiPostToTransparencyPost(post))
   }
 
@@ -41,7 +42,7 @@ export class PostsService {
     if (category === 'Todos') {
       return this.getAllPosts()
     }
-    const apiPosts = await ApiClient.get<any[]>(`/postagens/tipo/${encodeURIComponent(category)}`)
+    const apiPosts = await ApiClient.get<any[]>(API_CONFIG.ENDPOINTS.POSTS.BY_TYPE(category))
     return apiPosts.map(post => this.mapApiPostToTransparencyPost(post))
   }
 
@@ -74,7 +75,7 @@ export class PostsService {
 
   // Buscar post completo por ID
   static async getPostById(id: string): Promise<TransparencyDocumentData> {
-    const apiPost = await ApiClient.get<any>(`/postagens/${id}`)
+    const apiPost = await ApiClient.get<any>(API_CONFIG.ENDPOINTS.POSTS.GET_BY_ID(id))
     return this.mapApiPostToTransparencyDocument(apiPost)
   }
   // Criar novo post
@@ -100,7 +101,7 @@ export class PostsService {
       arquivos_base64,         // Backend espera 'arquivos_base64'
     }
 
-    return ApiClient.post<PostResponse>('/postagens', payload)
+    return ApiClient.post<PostResponse>(API_CONFIG.ENDPOINTS.POSTS.CREATE, payload)
   }
 
   // Método auxiliar para converter arquivo para base64
@@ -148,17 +149,17 @@ export class PostsService {
     if (updateData.type) payload.tipo = updateData.type
     if (arquivos_base64.length > 0) payload.arquivos_base64 = arquivos_base64
 
-    return ApiClient.put<PostResponse>(`/postagens/${id}`, payload)
+    return ApiClient.put<PostResponse>(API_CONFIG.ENDPOINTS.POSTS.UPDATE(id.toString()), payload)
   }
 
   // Deletar post
   static async deletePost(id: string): Promise<PostResponse> {
-    return ApiClient.delete<PostResponse>(`/postagens/${id}`)
+    return ApiClient.delete<PostResponse>(API_CONFIG.ENDPOINTS.POSTS.DELETE(id))
   }
 
   // Publicar rascunho
   static async publishPost(id: string): Promise<PostResponse> {
-    return ApiClient.post<PostResponse>(`/postagens/${id}/publish`)
+    return ApiClient.post<PostResponse>(API_CONFIG.ENDPOINTS.POSTS.PUBLISH(id))
   }
 
   // Salvar como rascunho

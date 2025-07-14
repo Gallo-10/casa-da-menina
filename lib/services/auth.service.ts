@@ -1,4 +1,5 @@
 import { ApiClient } from '../http/client'
+import { API_CONFIG } from '../config/api'
 import type { LoginRequest, LoginResponse, TokenValidationResponse } from '../types/auth'
 
 export class AuthService {
@@ -10,7 +11,7 @@ export class AuthService {
         senha: passwordHash
       }
 
-      const response = await ApiClient.post<LoginResponse>('/auth/login', requestBody)
+      const response = await ApiClient.post<LoginResponse>(API_CONFIG.ENDPOINTS.AUTH.LOGIN, requestBody)
 
       // Salvar token JWT real retornado pelo backend
       if (response && response.accessToken && typeof window !== 'undefined') {
@@ -100,26 +101,17 @@ export class AuthService {
         return false
       }
 
-      // Fazer requisição para validar token no backend
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/validate`, {
-        method: 'GET',
-        headers: {
-          'Authorization': authHeader,
-          'x-api-key': process.env.NEXT_PUBLIC_API_KEY || '',
-          'Content-Type': 'application/json'
+      // Fazer requisição para validar token no backend usando ApiClient
+      try {
+        const data = await ApiClient.get<TokenValidationResponse>(API_CONFIG.ENDPOINTS.AUTH.VALIDATE)
+
+        if (data.status === 'valid') {
+          return true
+        } else {
+          this.logout()
+          return false
         }
-      })
-
-      if (!response.ok) {
-        this.logout()
-        return false
-      }
-
-      const data: TokenValidationResponse = await response.json()
-
-      if (data.status === 'valid') {
-        return true
-      } else {
+      } catch (error) {
         this.logout()
         return false
       }

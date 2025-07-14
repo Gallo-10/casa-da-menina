@@ -1,56 +1,19 @@
+import { API_CONFIG, buildApiUrl, getAuthHeaders } from '@/lib/config/api'
+
 // Cliente HTTP genérico para todas as APIs
 export class ApiClient {
-  private static readonly BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend.casadamenina.com';
-
   static async request<T = any>(
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
-    // Debug completo das variáveis de ambiente
-    console.log('🔍 Environment Variables Debug:')
-    console.log('NODE_ENV:', process.env.NODE_ENV)
-    console.log('NEXT_PUBLIC_API_URL:', process.env.NEXT_PUBLIC_API_URL)
-    console.log('NEXT_PUBLIC_API_KEY:', process.env.NEXT_PUBLIC_API_KEY ? '[DEFINED]' : '[UNDEFINED]')
-    console.log('BASE_URL resolved:', this.BASE_URL)
-
-    // Validar se BASE_URL não está undefined
-    if (!this.BASE_URL || this.BASE_URL === 'undefined') {
-      throw new Error('❌ API URL não configurada! Verifique NEXT_PUBLIC_API_URL nas variáveis de ambiente.')
-    }
-
-    const url = `${this.BASE_URL}${endpoint}`
-
-    console.log(`🔗 Making request to: ${url}`) // Debug temporário
+    const url = buildApiUrl(endpoint)
 
     const config: RequestInit = {
       headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        ...getAuthHeaders(),
         ...options.headers,
       },
       ...options,
-    }
-
-    // Adicionar API key se disponível
-    const apiKey = process.env.NEXT_PUBLIC_API_KEY
-    if (apiKey) {
-      config.headers = {
-        ...config.headers,
-        'x-api-key': apiKey.trim(),
-      }
-    }
-
-    // Adicionar token de autenticação se disponível (apenas no browser)
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('authToken')
-      const tokenType = localStorage.getItem('tokenType')
-
-      if (token) {
-        config.headers = {
-          ...config.headers,
-          'Authorization': `${tokenType || 'Bearer'} ${token}`,
-        }
-      }
     }
 
     try {
@@ -90,21 +53,10 @@ export class ApiClient {
   }
 
   static async upload<T = any>(endpoint: string, formData: FormData): Promise<T> {
-    // Validar se BASE_URL não está undefined
-    if (!this.BASE_URL || this.BASE_URL === 'undefined') {
-      throw new Error('❌ API URL não configurada! Verifique NEXT_PUBLIC_API_URL nas variáveis de ambiente.')
-    }
+    const url = buildApiUrl(endpoint)
 
-    const url = `${this.BASE_URL}${endpoint}`
-
-    console.log(`📤 Making upload request to: ${url}`) // Debug temporário
-
-    const headers: Record<string, string> = {}
-
-    // Adicionar API key se disponível
-    const apiKey = process.env.NEXT_PUBLIC_API_KEY
-    if (apiKey) {
-      headers['x-api-key'] = apiKey
+    const headers: Record<string, string> = {
+      'x-api-key': API_CONFIG.API_KEY
     }
 
     // Adicionar token de autenticação se existir
