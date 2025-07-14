@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { getTransparencyPosts, getTransparencyPostsByCategory } from "@/lib/transparency-api"
+import { PostsService } from "@/lib/services/posts.service"
 import type { TransparencyPost, TransparencyCategory } from "@/lib/types/transparency"
 
 export default function TransparencyPage() {
@@ -19,11 +19,12 @@ export default function TransparencyPage() {
       try {
         setLoading(true)
         setError(null)
-        const fetchedPosts = await getTransparencyPostsByCategory(currentFilter)
+
+        const fetchedPosts = await PostsService.getPostsByCategory(currentFilter)
+
         setPosts(fetchedPosts)
       } catch (err) {
         setError("Erro ao carregar documentos. Tente novamente.")
-        console.error("Erro ao buscar posts:", err)
       } finally {
         setLoading(false)
       }
@@ -58,7 +59,7 @@ export default function TransparencyPage() {
       {/* Filters Section */}
       <section className="w-full py-6">
         <div className="container px-4 md:px-6">
-          <div className="flex flex-wrap gap-2 justify-center">
+          <div className="flex flex-wrap gap-2 justify-center mb-4">
             <Button
               variant={currentFilter === "Todos" ? "outline" : "ghost"}
               className={currentFilter === "Todos" ? "border-blue-600 text-blue-600 hover:bg-blue-100" : ""}
@@ -108,6 +109,14 @@ export default function TransparencyPage() {
             >
               Relação das Parcerias
             </Button>
+          </div>
+          {/* Debug info */}
+          <div className="text-center mt-4">
+            <p className="text-sm text-gray-500">
+              Filtro atual: <strong>{currentFilter}</strong> |
+              Posts encontrados: <strong>{posts.length}</strong> |
+              Status: <strong>{loading ? 'Carregando...' : error ? 'Erro' : 'Carregado'}</strong>
+            </p>
           </div>
         </div>
       </section>

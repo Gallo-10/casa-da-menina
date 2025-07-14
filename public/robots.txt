@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+Allow: /sobre
+Allow: /transparencia
+Allow: /contato
+
+# Bloquear área administrativa
+Disallow: /admin
+Disallow: /admin/*
+
+# Bloquear arquivos do sistema
+Disallow: /_next/
+Disallow: /api/
+Disallow: /*.json
+
+# Sitemap
+Sitemap: https://casadamenina.com/sitemap.xml
+
+# Crawl-delay para ser gentil com o servidor
+Crawl-delay: 1

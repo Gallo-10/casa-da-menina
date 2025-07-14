@@ -26,9 +26,18 @@ export class ApiClient {
       }
     }
 
-    console.log('🔑 API Key:', apiKey)
-    console.log('🌐 Request URL:', url)
-    console.log('📋 Headers:', config.headers)
+    // Adicionar token de autenticação se disponível (apenas no browser)
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('authToken')
+      const tokenType = localStorage.getItem('tokenType')
+
+      if (token) {
+        config.headers = {
+          ...config.headers,
+          'Authorization': `${tokenType || 'Bearer'} ${token}`,
+        }
+      }
+    }
 
     // Adicionar token de autenticação se existir
     const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null

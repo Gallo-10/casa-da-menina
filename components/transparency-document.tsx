@@ -11,6 +11,65 @@ interface TransparencyDocumentProps {
 }
 
 export default function TransparencyDocument({ document, onBack }: TransparencyDocumentProps) {
+  // Função para converter base64 em blob e abrir PDF
+  const openPdfFromBase64 = (base64Data: string, fileName: string) => {
+    try {
+      // Remover prefixo data: se existir
+      const base64String = base64Data.includes(',') ? base64Data.split(',')[1] : base64Data
+
+      // Converter base64 para bytes
+      const binaryString = window.atob(base64String)
+      const bytes = new Uint8Array(binaryString.length)
+
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i)
+      }
+
+      // Criar blob PDF
+      const blob = new Blob([bytes], { type: 'application/pdf' })
+      const url = URL.createObjectURL(blob)
+
+      // Abrir em nova aba
+      window.open(url, '_blank')
+
+      // Limpar URL após um tempo para liberar memória
+      setTimeout(() => URL.revokeObjectURL(url), 1000)
+    } catch (error) {
+      alert('Erro ao abrir o documento. Tente novamente.')
+    }
+  }
+
+  // Função para download do PDF
+  const downloadPdfFromBase64 = (base64Data: string, fileName: string) => {
+    try {
+      // Remover prefixo data: se existir
+      const base64String = base64Data.includes(',') ? base64Data.split(',')[1] : base64Data
+
+      // Converter base64 para bytes
+      const binaryString = window.atob(base64String)
+      const bytes = new Uint8Array(binaryString.length)
+
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i)
+      }
+
+      // Criar blob PDF
+      const blob = new Blob([bytes], { type: 'application/pdf' })
+      const url = URL.createObjectURL(blob)
+
+      // Criar link de download
+      const link = window.document.createElement('a')
+      link.href = url
+      link.download = fileName
+      link.click()
+
+      // Limpar URL
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      alert('Erro ao baixar o documento. Tente novamente.')
+    }
+  }
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
@@ -94,14 +153,22 @@ export default function TransparencyDocument({ document, onBack }: TransparencyD
                   <CardContent className="space-y-3">
                     {document.attachments.map((attachment, index) => (
                       <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <div className="flex items-center space-x-2">
+                        <div
+                          className="flex items-center space-x-2 flex-1 cursor-pointer hover:bg-gray-100 rounded p-1 transition-colors"
+                          onClick={() => attachment.url && openPdfFromBase64(attachment.url, attachment.name)}
+                        >
                           <FileText className="h-4 w-4 text-blue-600" />
                           <div>
-                            <p className="text-sm font-medium">{attachment.name}</p>
+                            <p className="text-sm font-medium text-blue-600 hover:text-blue-800">{attachment.name}</p>
                             <p className="text-xs text-gray-500">{attachment.size}</p>
                           </div>
                         </div>
-                        <Button size="sm" variant="outline">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => attachment.url && downloadPdfFromBase64(attachment.url, attachment.name)}
+                          title="Baixar arquivo"
+                        >
                           <Download className="h-4 w-4" />
                         </Button>
                       </div>
@@ -116,11 +183,29 @@ export default function TransparencyDocument({ document, onBack }: TransparencyD
                   <CardTitle className="text-lg">Ações</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button className="w-full" variant="outline">
-                    <Download className="mr-2 h-4 w-4" />
-                    Baixar PDF
-                  </Button>
-                  <Button className="w-full" variant="outline">
+                  {document.attachments && document.attachments.length > 0 && (
+                    <Button
+                      className="w-full"
+                      variant="outline"
+                      onClick={() => {
+                        document.attachments?.forEach((attachment, index) => {
+                          if (attachment.url) {
+                            setTimeout(() => {
+                              downloadPdfFromBase64(attachment.url!, attachment.name)
+                            }, index * 500) // Delay entre downloads
+                          }
+                        })
+                      }}
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      Baixar Todos os Anexos
+                    </Button>
+                  )}
+                  <Button
+                    className="w-full"
+                    variant="outline"
+                    onClick={() => window.print()}
+                  >
                     Imprimir Documento
                   </Button>
                 </CardContent>

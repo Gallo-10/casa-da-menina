@@ -6,11 +6,11 @@ export class AuthApi {
   static async login(email: string, password: string): Promise<LoginResponse> {
     const requestBody: LoginRequest = {
       email,
-      passwordHash: password // Em produção, fazer hash no frontend também
+      senha: password // Em produção, fazer hash no frontend também
     }
 
     try {
-      const response = await ApiClient.post<LoginResponse>('/ms-admin-login', requestBody)
+      const response = await ApiClient.post<LoginResponse>('/auth/login', requestBody)
 
       // Se login foi bem-sucedido, salvar token
       if (response && typeof window !== 'undefined') {
@@ -23,23 +23,15 @@ export class AuthApi {
 
       return response
     } catch (error) {
-      console.error('Erro no login:', error)
       throw error
     }
   }
 
   // Logout
   static async logout(): Promise<void> {
-    try {
-      // Chamar endpoint de logout se existir
-      await ApiClient.post('/ms-admin-logout')
-    } catch (error) {
-      console.error('Erro no logout:', error)
-    } finally {
-      // Sempre limpar token local
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('authToken')
-      }
+    // Limpar token local (não há endpoint de logout na API)
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('authToken')
     }
   }
 

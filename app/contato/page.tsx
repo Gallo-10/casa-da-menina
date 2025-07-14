@@ -68,7 +68,7 @@ export default function ContactPage() {
       {/* Contact Information */}
       <section className="w-full py-12">
         <div className="container px-4 md:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 max-w-4xl mx-auto">
             <Card>
               <CardContent className="p-6 text-center">
                 <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
@@ -90,13 +90,13 @@ export default function ContactPage() {
                 </div>
                 <h3 className="font-bold text-blue-700 mb-2">Endereço</h3>
                 <p className="text-gray-600">
-                  Rua das Flores, 123
+                  Rua Dr. Luiz Pizza, 165
                   <br />
-                  Bairro Esperança
+                  Centro
                   <br />
-                  São Paulo - SP
+                  Assis - SP
                   <br />
-                  CEP: 01234-567
+                  CEP: 19814-350
                 </p>
               </CardContent>
             </Card>
@@ -120,160 +120,18 @@ export default function ContactPage() {
                 </div>
                 <h3 className="font-bold text-blue-700 mb-2">Telefone</h3>
                 <p className="text-gray-600">
-                  (11) 1234-5678
+                  (18) 3325-1131
                   <br />
-                  (11) 9876-5432
+                  (18) 998061156
                   <br />
                   <span className="text-sm">Segunda a Sexta: 8h às 18h</span>
                 </p>
               </CardContent>
             </Card>
-            <Card>
-              <CardContent className="p-6 text-center">
-                <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="text-blue-600"
-                  >
-                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                    <polyline points="22,6 12,13 2,6"></polyline>
-                  </svg>
-                </div>
-                <h3 className="font-bold text-blue-700 mb-2">Email</h3>
-                <p className="text-gray-600">
-                  contato@casadamenina.org
-                  <br />
-                  diretoria@casadamenina.org
-                  <br />
-                  <span className="text-sm">Resposta em até 24h</span>
-                </p>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </section>
-
-      {/* Contact Form */}
-      <section className="w-full py-12 bg-blue-50">
-        <div className="container px-4 md:px-6">
-          <div className="max-w-2xl mx-auto">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-2xl text-center text-blue-700">Envie sua Mensagem</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {submitted ? (
-                  <div className="text-center py-8">
-                    <div className="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="text-green-600"
-                      >
-                        <path d="M9 12l2 2 4-4"></path>
-                        <circle cx="12" cy="12" r="10"></circle>
-                      </svg>
-                    </div>
-                    <h3 className="text-xl font-bold text-green-700 mb-2">Mensagem Enviada!</h3>
-                    <p className="text-gray-600">Obrigado pelo seu contato. Responderemos em breve!</p>
-                    <Button onClick={() => setSubmitted(false)} className="mt-4 bg-blue-600 hover:bg-blue-700">
-                      Enviar Nova Mensagem
-                    </Button>
-                  </div>
-                ) : (
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="name">Nome Completo *</Label>
-                        <Input
-                          id="name"
-                          value={formData.name}
-                          onChange={(e) => handleInputChange("name", e.target.value)}
-                          placeholder="Seu nome completo"
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email *</Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          value={formData.email}
-                          onChange={(e) => handleInputChange("email", e.target.value)}
-                          placeholder="seu@email.com"
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="phone">Telefone</Label>
-                        <Input
-                          id="phone"
-                          value={formData.phone}
-                          onChange={(e) => handleInputChange("phone", e.target.value)}
-                          placeholder="(11) 1234-5678"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="subject">Assunto *</Label>
-                        <Select
-                          value={formData.subject}
-                          onValueChange={(value) => handleInputChange("subject", value)}
-                          required
-                        >
-                          <SelectTrigger id="subject">
-                            <SelectValue placeholder="Selecione o assunto" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="informacoes">Informações Gerais</SelectItem>
-                            <SelectItem value="doacao">Doações</SelectItem>
-                            <SelectItem value="voluntariado">Voluntariado</SelectItem>
-                            <SelectItem value="adocao">Adoção</SelectItem>
-                            <SelectItem value="parcerias">Parcerias</SelectItem>
-                            <SelectItem value="imprensa">Imprensa</SelectItem>
-                            <SelectItem value="outros">Outros</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="message">Mensagem *</Label>
-                      <Textarea
-                        id="message"
-                        value={formData.message}
-                        onChange={(e) => handleInputChange("message", e.target.value)}
-                        placeholder="Digite sua mensagem aqui..."
-                        className="min-h-[120px]"
-                        required
-                      />
-                    </div>
-                    <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700" disabled={isSubmitting}>
-                      {isSubmitting ? "Enviando..." : "Enviar Mensagem"}
-                    </Button>
-                  </form>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
+      
       {/* Additional Information */}
       <section className="w-full py-12">
         <div className="container px-4 md:px-6">
@@ -301,7 +159,6 @@ export default function ContactPage() {
                     <span>Fechado</span>
                   </div>
                 </div>
-                <p className="text-sm text-gray-600 mt-4">* Para emergências, temos plantão 24 horas</p>
               </CardContent>
             </Card>
             <Card>

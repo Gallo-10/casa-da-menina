@@ -50,13 +50,10 @@ export default function Footer() {
             <h3 className="text-lg font-medium">Contato</h3>
             <ul className="space-y-2">
               <li className="text-sm text-gray-500">
-                <strong>Endereço:</strong> Rua Exemplo, 123
+                <strong>Endereço:</strong>  Rua Dr. Luiz Pizza, 165 - Centro, Assis
               </li>
               <li className="text-sm text-gray-500">
-                <strong>Telefone:</strong> (00) 1234-5678
-              </li>
-              <li className="text-sm text-gray-500">
-                <strong>Email:</strong> contato@casadamenina.org
+                <strong>Telefone:</strong> (18) 3325-1131
               </li>
             </ul>
           </div>

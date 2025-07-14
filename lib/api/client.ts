@@ -1,6 +1,6 @@
 // Cliente HTTP genérico para todas as APIs
 export class ApiClient {
-  private static readonly BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.casadamenina.org'
+  private static readonly BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   static async request<T = any>(
     endpoint: string,

@@ -18,27 +18,24 @@ export default function AdminLoginPage() {
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
     setIsLoading(true)
 
     try {
+      // Fazer hash MD5 da senha antes de enviar
       const passwordHash = CryptoJS.MD5(password).toString()
 
-      await AuthService.login(email, passwordHash)
+      const response = await AuthService.login(email, passwordHash)
 
-      router.push("/admin/dashboard")
+      // Pequeno delay para garantir que o token foi salvo
+      setTimeout(() => {
+        router.push("/admin/dashboard")
+      }, 100)
 
     } catch (error) {
-      router.push("/admin/dashboard")
-      if (error instanceof AuthError) {
-        setError(error.message)
-      } else {
-        console.error('Erro inesperado no login:', error)
-        setError("Erro inesperado. Tente novamente.")
-      }
+      setError("Credenciais inválidas ou erro de conexão")
     } finally {
       setIsLoading(false)
     }

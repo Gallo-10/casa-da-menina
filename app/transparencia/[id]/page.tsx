@@ -5,7 +5,7 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import TransparencyDocument from "@/components/transparency-document"
-import { getTransparencyDocument } from "@/lib/transparency-api"
+import { PostsService } from "@/lib/services/posts.service"
 import type { TransparencyDocumentData } from "@/lib/types/transparency"
 
 export default function TransparencyDocumentPage() {
@@ -22,11 +22,12 @@ export default function TransparencyDocumentPage() {
       try {
         setLoading(true)
         setError(null)
-        const fetchedDocument = await getTransparencyDocument(Number(documentId))
+
+        const fetchedDocument = await PostsService.getPostById(documentId)
+
         setDocument(fetchedDocument)
       } catch (err) {
         setError("Erro ao carregar documento. Tente novamente.")
-        console.error("Erro ao buscar documento:", err)
       } finally {
         setLoading(false)
       }

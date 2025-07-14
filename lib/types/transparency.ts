@@ -7,7 +7,7 @@ export interface DocumentAttachment {
 }
 
 export interface TransparencyDocumentData {
-  id: number
+  id: string
   title: string
   date: string
   type: string
@@ -17,7 +17,7 @@ export interface TransparencyDocumentData {
 }
 
 export interface TransparencyPost {
-  id: number
+  id: string
   title: string
   date: string
   excerpt: string

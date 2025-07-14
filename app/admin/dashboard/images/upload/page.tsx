@@ -10,9 +10,28 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ArrowLeft, Upload } from "lucide-react"
+import { useAuthGuard } from "@/lib/hooks/use-auth-guard"
 
 export default function UploadImagePage() {
   const router = useRouter()
+  const { isAuthenticated, isLoading } = useAuthGuard()
+
+  // Mostrar loading enquanto verifica autenticação
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-2 text-gray-600">Verificando autenticação...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Se não autenticado, o hook já redireciona
+  if (!isAuthenticated) {
+    return null
+  }
   const [name, setName] = useState("")
   const [location, setLocation] = useState("")
   const [image, setImage] = useState<File | null>(null)

@@ -1,71 +1,114 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { FileText, ImageIcon, LayoutDashboard, LogOut, Plus } from "lucide-react"
-import { useAdminAuth } from "@/lib/hooks/useAdminAuth"
+import { FileText, ImageIcon, LayoutDashboard, LogOut, Plus, Trash2 } from "lucide-react"
+import { useAuthGuard } from "@/lib/hooks/use-auth-guard"
+import { AuthService } from "@/lib/services/auth.service"
+import { PostsService } from "@/lib/services/posts.service"
+import type { TransparencyPost } from "@/lib/types/transparency"
 
 export default function AdminDashboard() {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState("overview")
-  const { logout } = useAdminAuth()
+  const { isAuthenticated, isLoading } = useAuthGuard()
 
-  // Simulação de posts de transparência
-  const transparencyPosts = [
-    {
-      id: 1,
-      title: "Relatório Financeiro - 1º Trimestre 2025",
-      date: "01/04/2025",
-      type: "Financeiro",
-    },
-    {
-      id: 2,
-      title: "Prestação de Contas - Projeto Educação em Foco",
-      date: "15/03/2025",
-      type: "Projetos",
-    },
-    {
-      id: 3,
-      title: "Auditoria Externa - Exercício 2024",
-      date: "28/02/2025",
-      type: "Auditoria",
-    },
-    {
-      id: 4,
-      title: "Doações Recebidas - Campanha de Inverno",
-      date: "10/02/2025",
-      type: "Doações",
-    },
-  ]
+  // Estados para dados reais da API
+  const [posts, setPosts] = useState<TransparencyPost[]>([])
+  const [totalPosts, setTotalPosts] = useState(0)
+  const [isLoadingPosts, setIsLoadingPosts] = useState(true)
+  const [postsError, setPostsError] = useState<string | null>(null)
+  const [deletingPostId, setDeletingPostId] = useState<string | null>(null)
 
-  // Simulação de imagens do site
-  const siteImages = [
-    {
-      id: 1,
-      name: "Banner Principal",
-      location: "Página Inicial",
-      lastUpdated: "10/03/2025",
-    },
-    {
-      id: 2,
-      name: "Imagem Sobre Nós",
-      location: "Página Sobre",
-      lastUpdated: "05/02/2025",
-    },
-    {
-      id: 3,
-      name: "Banner Programas",
-      location: "Página Programas",
-      lastUpdated: "20/01/2025",
-    },
-  ]
+  // Buscar posts da API
+  const fetchPosts = async () => {
+    try {
+      setIsLoadingPosts(true)
+      setPostsError(null)
+
+      const allPosts = await PostsService.getAllPosts()
+
+      setPosts(allPosts)
+      setTotalPosts(allPosts.length)
+
+    } catch (error) {
+      setPostsError('Erro ao carregar posts')
+    } finally {
+      setIsLoadingPosts(false)
+    }
+  }
+
+  // Deletar post
+  const handleDeletePost = async (postId: string) => {
+    if (!confirm('Tem certeza que deseja deletar esta postagem? Esta ação não pode ser desfeita.')) {
+      return
+    }
+
+    try {
+      setDeletingPostId(postId)
+
+      await PostsService.deletePost(postId)
+
+      // Atualizar lista de posts
+      await fetchPosts()
+
+    } catch (error) {
+      alert('Erro ao deletar postagem. Tente novamente.')
+    } finally {
+      setDeletingPostId(null)
+    }
+  }
+
+  // Carregar dados quando componente monta e usuário está autenticado
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchPosts()
+    }
+  }, [isAuthenticated])
+
+  // Verificar URL para abrir aba específica
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search)
+      const tabParam = urlParams.get('tab')
+      if (tabParam && ['overview', 'posts', 'images'].includes(tabParam)) {
+        setActiveTab(tabParam)
+      }
+    }
+  }, [])
 
   const handleLogout = async () => {
-    await logout()
+    await AuthService.logout()
+    router.push('/admin')
+  }
+
+  // Atualizar URL quando aba muda
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab)
+    const url = new URL(window.location.href)
+    url.searchParams.set('tab', tab)
+    window.history.replaceState({}, '', url.toString())
+  }
+
+  // Mostrar loading enquanto verifica autenticação
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-2 text-gray-600">Verificando autenticação...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Se não autenticado, o hook já redireciona
+  if (!isAuthenticated) {
+    return null
   }
 
   return (
@@ -80,7 +123,7 @@ export default function AdminDashboard() {
               className={
                 activeTab === "overview" ? "bg-blue-600 hover:bg-blue-700 w-full justify-start" : "w-full justify-start"
               }
-              onClick={() => setActiveTab("overview")}
+              onClick={() => handleTabChange("overview")}
             >
               <LayoutDashboard className="mr-2 h-4 w-4" />
               Visão Geral
@@ -90,20 +133,10 @@ export default function AdminDashboard() {
               className={
                 activeTab === "posts" ? "bg-blue-600 hover:bg-blue-700 w-full justify-start" : "w-full justify-start"
               }
-              onClick={() => setActiveTab("posts")}
+              onClick={() => handleTabChange("posts")}
             >
               <FileText className="mr-2 h-4 w-4" />
               Postagens
-            </Button>
-            <Button
-              variant={activeTab === "images" ? "default" : "ghost"}
-              className={
-                activeTab === "images" ? "bg-blue-600 hover:bg-blue-700 w-full justify-start" : "w-full justify-start"
-              }
-              onClick={() => setActiveTab("images")}
-            >
-              <ImageIcon className="mr-2 h-4 w-4" />
-              Imagens
             </Button>
           </nav>
           <Button variant="outline" className="mt-auto" onClick={handleLogout}>
@@ -123,11 +156,10 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs defaultValue="overview" value={activeTab} onValueChange={handleTabChange} className="w-full">
             <TabsList className="md:hidden grid w-full grid-cols-3">
               <TabsTrigger value="overview">Visão Geral</TabsTrigger>
               <TabsTrigger value="posts">Postagens</TabsTrigger>
-              <TabsTrigger value="images">Imagens</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview">
@@ -138,26 +170,20 @@ export default function AdminDashboard() {
                     <FileText className="h-4 w-4 text-blue-600" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{transparencyPosts.length}</div>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Imagens do Site</CardTitle>
-                    <ImageIcon className="h-4 w-4 text-blue-600" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{siteImages.length}</div>
-                    <p className="text-xs text-gray-500">
-                      Última atualização em{" "}
-                      {
-                        siteImages.sort(
-                          (a, b) =>
-                            new Date(b.lastUpdated.split("/").reverse().join("-")).getTime() -
-                            new Date(a.lastUpdated.split("/").reverse().join("-")).getTime(),
-                        )[0].lastUpdated
-                      }
-                    </p>
+                    <div className="text-2xl font-bold">
+                      {isLoadingPosts ? (
+                        <div className="animate-pulse">...</div>
+                      ) : postsError ? (
+                        <span className="text-red-500">Erro</span>
+                      ) : (
+                        totalPosts
+                      )}
+                    </div>
+                    {!isLoadingPosts && !postsError && (
+                      <p className="text-xs text-muted-foreground">
+                        {totalPosts === 1 ? '1 postagem encontrada' : `${totalPosts} postagens encontradas`}
+                      </p>
+                    )}
                   </CardContent>
                 </Card>
                 <Card>
@@ -185,11 +211,20 @@ export default function AdminDashboard() {
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle>Postagens de Transparência</CardTitle>
-                    <Link href="/admin/dashboard/posts/new">
-                      <Button className="bg-blue-600 hover:bg-blue-700">
-                        <Plus className="mr-2 h-4 w-4" /> Nova Postagem
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={fetchPosts}
+                        disabled={isLoadingPosts}
+                      >
+                        {isLoadingPosts ? 'Carregando...' : 'Atualizar'}
                       </Button>
-                    </Link>
+                      <Link href="/admin/dashboard/posts/new">
+                        <Button className="bg-blue-600 hover:bg-blue-700">
+                          <Plus className="mr-2 h-4 w-4" /> Nova Postagem
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
                   <CardDescription>Gerencie todas as postagens do Portal da Transparência</CardDescription>
                 </CardHeader>
@@ -205,66 +240,54 @@ export default function AdminDashboard() {
                         </tr>
                       </thead>
                       <tbody>
-                        {transparencyPosts.map((post) => (
-                          <tr key={post.id} className="border-b">
-                            <td className="py-3 px-2">{post.title}</td>
-                            <td className="py-3 px-2">{post.date}</td>
-                            <td className="py-3 px-2">{post.type}</td>
-                            <td className="py-3 px-2 text-right">
-                              <Link href={`/admin/dashboard/posts/edit/${post.id}`}>
-                                <Button variant="ghost" size="sm">
-                                  Editar
-                                </Button>
-                              </Link>
+                        {isLoadingPosts ? (
+                          <tr>
+                            <td colSpan={4} className="py-8 text-center text-gray-500">
+                              <div className="flex items-center justify-center">
+                                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900 mr-2"></div>
+                                Carregando posts...
+                              </div>
                             </td>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="images">
-              <Card>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle>Imagens do Site</CardTitle>
-                    <Link href="/admin/dashboard/images/upload">
-                      <Button className="bg-blue-600 hover:bg-blue-700">
-                        <Plus className="mr-2 h-4 w-4" /> Adicionar Imagem
-                      </Button>
-                    </Link>
-                  </div>
-                  <CardDescription>Gerencie as imagens utilizadas no site</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="border-b">
-                          <th className="text-left py-3 px-2">Nome</th>
-                          <th className="text-left py-3 px-2">Localização</th>
-                          <th className="text-left py-3 px-2">Última Atualização</th>
-                          <th className="text-right py-3 px-2">Ações</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {siteImages.map((image) => (
-                          <tr key={image.id} className="border-b">
-                            <td className="py-3 px-2">{image.name}</td>
-                            <td className="py-3 px-2">{image.location}</td>
-                            <td className="py-3 px-2">{image.lastUpdated}</td>
-                            <td className="py-3 px-2 text-right">
-                              <Link href={`/admin/dashboard/images/edit/${image.id}`}>
-                                <Button variant="ghost" size="sm">
-                                  Substituir
-                                </Button>
-                              </Link>
+                        ) : postsError ? (
+                          <tr>
+                            <td colSpan={4} className="py-8 text-center text-red-500">
+                              {postsError}
                             </td>
                           </tr>
-                        ))}
+                        ) : posts.length === 0 ? (
+                          <tr>
+                            <td colSpan={4} className="py-8 text-center text-gray-500">
+                              Nenhuma postagem encontrada
+                            </td>
+                          </tr>
+                        ) : (
+                          posts.map((post) => (
+                            <tr key={post.id} className="border-b">
+                              <td className="py-3 px-2">{post.title}</td>
+                              <td className="py-3 px-2">{post.date}</td>
+                              <td className="py-3 px-2">{post.type}</td>
+                              <td className="py-3 px-2 text-right">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleDeletePost(post.id)}
+                                  disabled={deletingPostId === post.id}
+                                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                >
+                                  {deletingPostId === post.id ? (
+                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
+                                  ) : (
+                                    <>
+                                      <Trash2 className="h-4 w-4 mr-1" />
+                                      Deletar
+                                    </>
+                                  )}
+                                </Button>
+                              </td>
+                            </tr>
+                          ))
+                        )}
                       </tbody>
                     </table>
                   </div>

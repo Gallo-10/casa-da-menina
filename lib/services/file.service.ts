@@ -52,10 +52,4 @@ export class FileService {
   static async deleteFile(fileName: string): Promise<{ success: boolean; message: string }> {
     return ApiClient.delete(`/files/${encodeURIComponent(fileName)}`)
   }
-
-  // Obter URL de download
-  static getDownloadUrl(fileName: string): string {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://backend.casadamenina.com/api'
-    return `${baseUrl}/files/download/${encodeURIComponent(fileName)}`
-  }
 }

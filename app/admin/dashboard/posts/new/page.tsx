@@ -11,12 +11,12 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ArrowLeft, Upload } from "lucide-react"
-import { useAdminAuth } from "@/lib/hooks/useAdminAuth"
+import { useAuthGuard } from "@/lib/hooks/use-auth-guard"
 import { PostsService } from "@/lib/services/posts.service"
 import type { TransparencyCategory } from "@/lib/types/transparency"
 
 export default function NewPostPage() {
-  useAdminAuth() // Verificar autenticação
+  const { isAuthenticated, isLoading } = useAuthGuard()
   const router = useRouter()
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
@@ -24,47 +24,44 @@ export default function NewPostPage() {
   const [files, setFiles] = useState<FileList | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  // Mostrar loading enquanto verifica autenticação
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-2 text-gray-600">Verificando autenticação...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Se não autenticado, o hook já redireciona
+  if (!isAuthenticated) {
+    return null
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
 
     try {
+
       const filesArray = files ? Array.from(files) : undefined
 
-      await PostsService.createPost({
+      const postData = {
         title,
         content,
         type: type as TransparencyCategory,
         files: filesArray,
-        isDraft: false
-      })
+      }
+
+
+      await PostsService.createPost(postData)
 
       router.push("/admin/dashboard?tab=posts")
     } catch (error) {
-      console.error('Erro ao criar post:', error)
-      // Aqui você pode adicionar uma notificação de erro
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  const handleSaveDraft = async () => {
-    setIsSubmitting(true)
-
-    try {
-      const filesArray = files ? Array.from(files) : undefined
-
-      await PostsService.saveDraft({
-        title,
-        content,
-        type: type as TransparencyCategory,
-        files: filesArray
-      })
-
-      router.push("/admin/dashboard?tab=posts")
-    } catch (error) {
-      console.error('Erro ao salvar rascunho:', error)
-      // Aqui você pode adicionar uma notificação de erro
+      
     } finally {
       setIsSubmitting(false)
     }
@@ -153,9 +150,6 @@ export default function NewPostPage() {
               Cancelar
             </Button>
             <div className="space-x-2">
-              <Button type="button" variant="outline" disabled={isSubmitting} onClick={handleSaveDraft}>
-                {isSubmitting ? "Salvando..." : "Salvar como Rascunho"}
-              </Button>
               <Button type="submit" className="bg-blue-600 hover:bg-blue-700" disabled={isSubmitting}>
                 {isSubmitting ? "Publicando..." : "Publicar"}
               </Button>
