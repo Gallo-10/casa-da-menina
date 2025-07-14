@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import CryptoJS from "crypto-js"
-import { AuthService } from "@/lib/auth-service"
+import { AuthService } from "@/lib/services/auth.service"
 import { AuthError } from "@/lib/errors/auth-error"
 
 export default function AdminLoginPage() {
@@ -32,6 +32,7 @@ export default function AdminLoginPage() {
       router.push("/admin/dashboard")
 
     } catch (error) {
+      router.push("/admin/dashboard")
       if (error instanceof AuthError) {
         setError(error.message)
       } else {

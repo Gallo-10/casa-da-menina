@@ -11,8 +11,12 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ArrowLeft, Upload } from "lucide-react"
+import { useAdminAuth } from "@/lib/hooks/useAdminAuth"
+import { PostsService } from "@/lib/services/posts.service"
+import type { TransparencyCategory } from "@/lib/types/transparency"
 
 export default function NewPostPage() {
+  useAdminAuth() // Verificar autenticação
   const router = useRouter()
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
@@ -20,15 +24,50 @@ export default function NewPostPage() {
   const [files, setFiles] = useState<FileList | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
 
-    // Simulação de envio - em produção, isso enviaria para o backend
-    setTimeout(() => {
-      setIsSubmitting(false)
+    try {
+      const filesArray = files ? Array.from(files) : undefined
+
+      await PostsService.createPost({
+        title,
+        content,
+        type: type as TransparencyCategory,
+        files: filesArray,
+        isDraft: false
+      })
+
       router.push("/admin/dashboard?tab=posts")
-    }, 1500)
+    } catch (error) {
+      console.error('Erro ao criar post:', error)
+      // Aqui você pode adicionar uma notificação de erro
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleSaveDraft = async () => {
+    setIsSubmitting(true)
+
+    try {
+      const filesArray = files ? Array.from(files) : undefined
+
+      await PostsService.saveDraft({
+        title,
+        content,
+        type: type as TransparencyCategory,
+        files: filesArray
+      })
+
+      router.push("/admin/dashboard?tab=posts")
+    } catch (error) {
+      console.error('Erro ao salvar rascunho:', error)
+      // Aqui você pode adicionar uma notificação de erro
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -65,10 +104,12 @@ export default function NewPostPage() {
                   <SelectValue placeholder="Selecione o tipo de postagem" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="financeiro">Financeiro</SelectItem>
-                  <SelectItem value="projetos">Projetos</SelectItem>
-                  <SelectItem value="auditoria">Auditoria</SelectItem>
-                  <SelectItem value="doacoes">Doações</SelectItem>
+                  <SelectItem value="Documentos Constitutivos">Documentos Constitutivos</SelectItem>
+                  <SelectItem value="Organização Administrativa">Organização Administrativa</SelectItem>
+                  <SelectItem value="Contratos Vigentes">Contratos Vigentes</SelectItem>
+                  <SelectItem value="Relação dos Fornecedores">Relação dos Fornecedores</SelectItem>
+                  <SelectItem value="Mural de Publicações">Mural de Publicações</SelectItem>
+                  <SelectItem value="Relação das Parcerias">Relação das Parcerias</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -112,8 +153,8 @@ export default function NewPostPage() {
               Cancelar
             </Button>
             <div className="space-x-2">
-              <Button type="submit" variant="outline" disabled={isSubmitting}>
-                Salvar como Rascunho
+              <Button type="button" variant="outline" disabled={isSubmitting} onClick={handleSaveDraft}>
+                {isSubmitting ? "Salvando..." : "Salvar como Rascunho"}
               </Button>
               <Button type="submit" className="bg-blue-600 hover:bg-blue-700" disabled={isSubmitting}>
                 {isSubmitting ? "Publicando..." : "Publicar"}

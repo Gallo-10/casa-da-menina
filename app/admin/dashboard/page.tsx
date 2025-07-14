@@ -7,10 +7,12 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { FileText, ImageIcon, LayoutDashboard, LogOut, Plus } from "lucide-react"
+import { useAdminAuth } from "@/lib/hooks/useAdminAuth"
 
 export default function AdminDashboard() {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState("overview")
+  const { logout } = useAdminAuth()
 
   // Simulação de posts de transparência
   const transparencyPosts = [
@@ -62,8 +64,8 @@ export default function AdminDashboard() {
     },
   ]
 
-  const handleLogout = () => {
-    router.push("/admin")
+  const handleLogout = async () => {
+    await logout()
   }
 
   return (

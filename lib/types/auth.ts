@@ -4,7 +4,7 @@
 
 export interface LoginRequest {
   email: string
-  passwordHash: string
+  senha: string
 }
 
 export interface LoginResponse {
