@@ -168,19 +168,9 @@ export default function ContactPage() {
               <CardContent>
                 <div className="space-y-3">
                   <div>
-                    <h4 className="font-medium">Transporte Público:</h4>
-                    <p className="text-sm text-gray-600">
-                      Metrô: Estação Esperança (Linha Verde)
-                      <br />
-                      Ônibus: Linhas 123, 456, 789
-                    </p>
-                  </div>
-                  <div>
                     <h4 className="font-medium">De Carro:</h4>
                     <p className="text-sm text-gray-600">
-                      Estacionamento gratuito disponível
-                      <br />
-                      Acesso pela Av. Principal, 500m após o semáforo
+                      Acesso pela Rua Smith Vasconcelos após a Energisa. 
                     </p>
                   </div>
                   <div>
