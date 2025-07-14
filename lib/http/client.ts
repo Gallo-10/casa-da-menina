@@ -1,12 +1,26 @@
 // Cliente HTTP genérico para todas as APIs
 export class ApiClient {
-  private static readonly BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+  private static readonly BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://backend.casadamenina.com';
 
   static async request<T = any>(
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
+    // Debug completo das variáveis de ambiente
+    console.log('🔍 Environment Variables Debug:')
+    console.log('NODE_ENV:', process.env.NODE_ENV)
+    console.log('NEXT_PUBLIC_API_URL:', process.env.NEXT_PUBLIC_API_URL)
+    console.log('NEXT_PUBLIC_API_KEY:', process.env.NEXT_PUBLIC_API_KEY ? '[DEFINED]' : '[UNDEFINED]')
+    console.log('BASE_URL resolved:', this.BASE_URL)
+
+    // Validar se BASE_URL não está undefined
+    if (!this.BASE_URL || this.BASE_URL === 'undefined') {
+      throw new Error('❌ API URL não configurada! Verifique NEXT_PUBLIC_API_URL nas variáveis de ambiente.')
+    }
+
     const url = `${this.BASE_URL}${endpoint}`
+
+    console.log(`🔗 Making request to: ${url}`) // Debug temporário
 
     const config: RequestInit = {
       headers: {
@@ -36,15 +50,6 @@ export class ApiClient {
           ...config.headers,
           'Authorization': `${tokenType || 'Bearer'} ${token}`,
         }
-      }
-    }
-
-    // Adicionar token de autenticação se existir
-    const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null
-    if (token) {
-      config.headers = {
-        ...config.headers,
-        'Authorization': `Bearer ${token}`,
       }
     }
 
@@ -85,7 +90,14 @@ export class ApiClient {
   }
 
   static async upload<T = any>(endpoint: string, formData: FormData): Promise<T> {
+    // Validar se BASE_URL não está undefined
+    if (!this.BASE_URL || this.BASE_URL === 'undefined') {
+      throw new Error('❌ API URL não configurada! Verifique NEXT_PUBLIC_API_URL nas variáveis de ambiente.')
+    }
+
     const url = `${this.BASE_URL}${endpoint}`
+
+    console.log(`📤 Making upload request to: ${url}`) // Debug temporário
 
     const headers: Record<string, string> = {}
 
