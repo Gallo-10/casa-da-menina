@@ -39,11 +39,11 @@ export default function Home() {
             <div className="space-y-4">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-blue-700">Quem Somos</h2>
               <p className="text-gray-600">
-                A Casa da Menina São Francisco de Assis é uma entidade sem fins lucrativos, fundada em 10 de abril de 1962 por Floriano de Oliveira Garcez (Monsenhor Floriano). 
+                A Casa da Menina São Francisco de Assis é uma entidade sem fins lucrativos, fundada em 10 de abril de 1962 por Floriano de Oliveira Garcez (Monsenhor Floriano).
                 Está localizada à Rua Dr. Luiz Pizza, 165 – Centro – Assis/SP.
               </p>
               <p className="text-gray-600">
-                Tem como principal finalidade prestar atendimento a crianças de 4 meses a 5 anos, em período integral ou parcial, 
+                Tem como principal finalidade prestar atendimento a crianças de 4 meses a 5 anos, em período integral ou parcial,
                 suprindo suas necessidades individuais tanto nos aspectos físicos como cognitivos, de acordo com a faixa etária.
               </p>
               <Link href="/sobre">
@@ -53,12 +53,12 @@ export default function Home() {
               </Link>
             </div>
             <div className="flex justify-center">
-              <div className="relative w-full max-w-md h-60 overflow-hidden rounded-lg">
-                <div className="absolute inset-0 bg-blue-100 flex items-center justify-center">
+              <div className="relative w-full max-w-lg h-80 overflow-hidden rounded-lg">
+                <div className="relative w-full max-w-md h-80 overflow-hidden rounded-lg">
                   <img
-                    src="/placeholder.svg?height=240&width=400"
+                    src="/images/home-image.png"
                     alt="Brinquedos infantis representando o ambiente acolhedor da Casa da Menina"
-                    className="object-cover"
+                    className="object-cover w-full h-full"
                   />
                 </div>
               </div>

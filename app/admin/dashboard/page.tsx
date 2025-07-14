@@ -196,11 +196,6 @@ export default function AdminDashboard() {
                         <Plus className="mr-2 h-4 w-4" /> Nova Postagem
                       </Button>
                     </Link>
-                    <Link href="/admin/dashboard/images/upload">
-                      <Button variant="outline" className="w-full">
-                        <Plus className="mr-2 h-4 w-4" /> Adicionar Imagem
-                      </Button>
-                    </Link>
                   </CardContent>
                 </Card>
               </div>

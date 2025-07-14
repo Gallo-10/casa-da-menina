@@ -48,7 +48,7 @@ export default function AboutPage() {
               <div className="relative w-full max-w-md h-80 overflow-hidden rounded-lg">
                 <div className="absolute inset-0 bg-blue-100 flex items-center justify-center">
                   <img
-                    src="/placeholder.svg?height=320&width=400"
+                    src="/images/home-image.png"
                     alt="Ambiente acolhedor da Casa da Menina com brinquedos e decoração infantil"
                     className="object-cover w-full h-full"
                   />

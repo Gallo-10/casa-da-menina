@@ -35,7 +35,7 @@ export default function AdminLoginPage() {
       }, 100)
 
     } catch (error) {
-      setError("Credenciais inválidas ou erro de conexão")
+      setError("Credenciais inválidas")
     } finally {
       setIsLoading(false)
     }
