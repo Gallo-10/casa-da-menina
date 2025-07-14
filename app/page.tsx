@@ -181,11 +181,6 @@ export default function Home() {
               <Link href="/contato">
                 <Button className="bg-blue-600 hover:bg-blue-700">Fazer uma Doação</Button>
               </Link>
-              <Link href="/voluntariado">
-                <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-100">
-                  Seja Voluntário
-                </Button>
-              </Link>
             </div>
           </div>
         </div>
