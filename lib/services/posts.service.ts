@@ -41,6 +41,18 @@ export class PostsService {
     return apiPosts.map(post => this.mapApiPostToTransparencyPost(post))
   }
 
+  static async getPostsByTypeNoBase64(type: TransparencyCategory): Promise<TransparencyPost[]> {
+    const apiPosts = await ApiClient.get<any[]>(`/postagens/tipo-sem-arquivos/${encodeURIComponent(type)}`)
+    return apiPosts.map(post => ({
+      id: post.postagem_id,
+      title: post.postagem_titulo,
+      date: new Date(post.postagem_created_at).toLocaleDateString('pt-BR'),
+      excerpt: post.postagem_conteudo ? post.postagem_conteudo.substring(0, 150) + '...' : '',
+      type: post.postagem_tipo,
+      content: post.postagem_conteudo,
+      updatedAt: post.postagem_updated_at,
+    }))
+  }
   // Buscar posts por categoria
   static async getPostsByCategory(category: TransparencyCategory): Promise<TransparencyPost[]> {
     if (category === 'Todos') {

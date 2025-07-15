@@ -19,20 +19,34 @@ export default function TransparencyPage() {
         setLoading(true)
         setError(null)
 
-        const fetchedPostsRaw = await PostsService.getAllPostsMeta()
-        const mappedPosts = fetchedPostsRaw.map((post: any) => {
-          const dateObj = new Date(post.postagem_created_at)
-          const formattedDate = dateObj.toLocaleDateString('pt-BR')
-          return {
-            id: post.postagem_id,
-            title: post.postagem_titulo,
-            content: post.postagem_conteudo,
-            type: post.postagem_tipo,
-            date: formattedDate, 
-            updatedAt: post.postagem_updated_at,
-            excerpt: post.postagem_conteudo?.slice(0, 150) + (post.postagem_conteudo?.length > 150 ? '...' : ''),
-          }
-        })
+        let fetchedPostsRaw: any[] = []
+        if (currentFilter === "Todos") {
+          fetchedPostsRaw = await PostsService.getAllPostsMeta()
+        } else {
+          fetchedPostsRaw = await PostsService.getPostsByTypeNoBase64(currentFilter)
+        }
+
+        const mappedPosts = fetchedPostsRaw.every(post =>
+          post.id && post.title && post.date
+        )
+          ? fetchedPostsRaw
+          : fetchedPostsRaw.map((post: any) => {
+              const formattedDate =
+                post.postagem_created_at && !isNaN(Date.parse(post.postagem_created_at))
+                  ? new Date(post.postagem_created_at).toLocaleDateString('pt-BR')
+                  : ''
+              return {
+                id: post.postagem_id ?? '',
+                title: post.postagem_titulo ?? '',
+                content: post.postagem_conteudo ?? '',
+                type: post.postagem_tipo ?? '',
+                date: formattedDate,
+                updatedAt: post.postagem_updated_at ?? '',
+                excerpt: post.postagem_conteudo
+                  ? post.postagem_conteudo.slice(0, 150) + (post.postagem_conteudo.length > 150 ? '...' : '')
+                  : '',
+              }
+            })
         setPosts(mappedPosts)
       } catch (err) {
         setError("Erro ao carregar documentos. Tente novamente.")
@@ -40,7 +54,6 @@ export default function TransparencyPage() {
         setLoading(false)
       }
     }
-
     fetchPosts()
   }, [currentFilter])
 
