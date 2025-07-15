@@ -18,7 +18,6 @@ export class AdminApi {
     return ApiClient.get<DashboardStats>('/admin/dashboard/stats')
   }
 
-  // Listar todos os posts (incluindo rascunhos) para admin
   static async getAllPostsAdmin(): Promise<Array<{
     id: number
     title: string

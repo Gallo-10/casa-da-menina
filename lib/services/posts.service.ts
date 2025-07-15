@@ -31,6 +31,10 @@ export class PostsService {
     }
   }
 
+  static async getAllPostsMeta(): Promise<TransparencyPost[]> {
+    return ApiClient.get<TransparencyPost[]>('/postagens/sem-arquivos')
+  }
+  
   // Buscar todos os posts
   static async getAllPosts(): Promise<TransparencyPost[]> {
     const apiPosts = await ApiClient.get<any[]>(API_CONFIG.ENDPOINTS.POSTS.LIST)

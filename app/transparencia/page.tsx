@@ -13,16 +13,24 @@ export default function TransparencyPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Buscar posts quando o componente montar ou o filtro mudar
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         setLoading(true)
         setError(null)
 
-        const fetchedPosts = await PostsService.getPostsByCategory(currentFilter)
-
-        setPosts(fetchedPosts)
+        const fetchedPostsRaw = await PostsService.getAllPostsMeta()
+        // Mapeia os campos do backend para o modelo do frontend
+        const mappedPosts = fetchedPostsRaw.map((post: any) => ({
+        id: post.postagem_id,
+        title: post.postagem_titulo,
+        content: post.postagem_conteudo,
+        type: post.postagem_tipo,
+        date: post.postagem_created_at,
+        updatedAt: post.postagem_updated_at,
+          excerpt: post.postagem_conteudo?.slice(0, 150) + (post.postagem_conteudo?.length > 150 ? '...' : ''),
+        }))
+        setPosts(mappedPosts)
       } catch (err) {
         setError("Erro ao carregar documentos. Tente novamente.")
       } finally {

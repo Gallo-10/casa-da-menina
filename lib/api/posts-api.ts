@@ -40,7 +40,11 @@ export class PostsApi {
     }
     return ApiClient.get<TransparencyPost[]>(`/posts?category=${encodeURIComponent(category)}`)
   }
-
+  
+  static async getAllPostsMeta(): Promise<TransparencyPost[]> {
+    return ApiClient.get<TransparencyPost[]>('/postagens/sem-arquivos')
+  }
+  
   // Buscar post completo por ID (com conteúdo detalhado)
   static async getPostById(id: number): Promise<TransparencyDocumentData> {
     return ApiClient.get<TransparencyDocumentData>(`/posts/${id}`)
@@ -103,11 +107,6 @@ export class PostsApi {
     return ApiClient.post<PostResponse>(`/posts/${id}/publish`)
   }
 
-  // Salvar como rascunho
-  static async saveDraft(data: Omit<CreatePostRequest, 'isDraft'>): Promise<PostResponse> {
-    return this.createPost({ ...data, isDraft: true })
-  }
-
   // Upload de arquivo individual (para usar separadamente)
   static async uploadFile(file: File, category?: string): Promise<UploadResponse> {
     const formData = new FormData()
@@ -125,9 +124,8 @@ export class PostsApi {
     return ApiClient.delete(`/files/${encodeURIComponent(fileName)}`)
   }
 
-  // Obter URL de download para arquivo
   static getFileDownloadUrl(fileName: string): string {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://api.casadamenina.org'
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL
     return `${baseUrl}/files/download/${encodeURIComponent(fileName)}`
   }
 }
