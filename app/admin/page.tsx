@@ -27,7 +27,7 @@ export default function AdminLoginPage() {
       // Fazer hash MD5 da senha antes de enviar
       const passwordHash = CryptoJS.MD5(password).toString()
 
-      const response = await AuthService.login(email, passwordHash)
+      await AuthService.login(email, passwordHash)
 
       // Pequeno delay para garantir que o token foi salvo
       setTimeout(() => {
