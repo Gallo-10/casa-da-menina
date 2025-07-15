@@ -56,7 +56,7 @@ export default function Home() {
               <div className="relative w-full max-w-lg h-80 overflow-hidden rounded-lg">
                 <div className="relative w-full max-w-md h-80 overflow-hidden rounded-lg">
                   <img
-                    src="/images/home-image.png"
+                    src="/images/home-image.jpg"
                     alt="Brinquedos infantis representando o ambiente acolhedor da Casa da Menina"
                     className="object-cover w-full h-full"
                   />
