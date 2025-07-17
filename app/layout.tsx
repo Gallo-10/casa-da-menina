@@ -19,8 +19,8 @@ export const metadata = {
     canonical: "https://casadamenina.com"
   },
   openGraph: {
-    title: "Casa da Menina - Acolhimento e Proteção",
-    description: "ONG dedicada ao acolhimento de meninas órfãs de até 10 anos em situação de vulnerabilidade.",
+    title: "Casa da Menina São Francisco de Assis",
+    description: "A Casa da Menina São Francisco de Assis é uma entidade sem fins lucrativos, fundada em 10 de abril de 1962 por Floriano de Oliveira Garcez (Monsenhor Floriano).Está localizada à Rua Dr. Luiz Pizza, 165 – Centro – Assis/SP.",
     url: "https://casadamenina.com",
     siteName: "Casa da Menina",
     locale: "pt_BR",
@@ -36,13 +36,13 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Casa da Menina - Acolhimento e Proteção",
-    description: "ONG dedicada ao acolhimento de meninas órfãs de até 10 anos em situação de vulnerabilidade.",
+    title: "Casa da Menina São Francisco de Assis",
+    description: "A Casa da Menina São Francisco de Assis é uma entidade sem fins lucrativos, fundada em 10 de abril de 1962 por Floriano de Oliveira Garcez (Monsenhor Floriano).Está localizada à Rua Dr. Luiz Pizza, 165 – Centro – Assis/SP.",
     images: ["/images/logo.png"],
   },
   icons: {
     icon: [
-      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon.ico", sizes: "32x32", type: "image/x-icon" },
       { url: "/images/logo.png", sizes: "192x192", type: "image/png" }
     ],
     apple: [
