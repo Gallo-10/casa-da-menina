@@ -8,9 +8,20 @@ import Footer from "@/components/footer"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
-  title: "Casa da Menina - Acolhimento e Proteção",
-  description: "ONG dedicada ao acolhimento de meninas órfãs de até 10 anos em situação de vulnerabilidade. Transparência, cuidado e proteção integral.",
-  keywords: "Casa da Menina, ONG, acolhimento, meninas órfãs, proteção, vulnerabilidade social, assistência social, Assis SP",
+  title: "Casa da Menina São Francisco de Assis",
+  keywords: [
+    "Casa da Menina",
+    "Acolhimento",
+    "Proteção",
+    "Entidade sem fins lucrativos",
+    "Assis",
+    "São Francisco de Assis",
+    "Floriano de Oliveira Garcez",
+    "Monsenhor Floriano",
+    "Rua Dr. Luiz Pizza",
+    "Centro",
+    "Assis/SP"
+  ],
   authors: [{ name: "Casa da Menina São Francisco de Assis" }],
   creator: "Casa da Menina São Francisco de Assis",
   publisher: "Casa da Menina São Francisco de Assis",
