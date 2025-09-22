@@ -19,7 +19,6 @@ export default function AdminLoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
-  // Se já estiver autenticado (token válido no storage), redirecionar para o dashboard
   useEffect(() => {
     if (AuthService.isAuthenticated()) {
       router.replace("/admin/dashboard")
@@ -31,12 +30,10 @@ export default function AdminLoginPage() {
     setIsLoading(true)
 
     try {
-      // Fazer hash MD5 da senha antes de enviar
       const passwordHash = CryptoJS.MD5(password).toString()
 
       await AuthService.login(email, passwordHash)
 
-      // Pequeno delay para garantir que o token foi salvo
       setTimeout(() => {
         router.push("/admin/dashboard")
       }, 100)

@@ -2,6 +2,37 @@ import { ApiClient } from '../http/client'
 import { API_CONFIG } from '../config/api'
 import type { TransparencyPost, TransparencyCategory, TransparencyDocumentData } from '../types/transparency'
 
+// Tipos das respostas da API (apenas campos usados aqui)
+interface ApiPostBase {
+  id?: string
+  titulo?: string
+  created_at?: string
+  conteudo?: string
+  tipo?: string
+  arquivos_base64?: string[]
+  nomes_arquivos?: string[]
+  updated_at?: string
+}
+
+interface ApiPostAltKeys {
+  postagem_id?: string
+  postagem_titulo?: string
+  postagem_created_at?: string
+  postagem_conteudo?: string
+  postagem_tipo?: string
+  postagem_updated_at?: string
+}
+
+type ApiPost = ApiPostBase & ApiPostAltKeys
+
+type PostPayload = {
+  titulo?: string
+  conteudo?: string
+  tipo?: TransparencyCategory
+  arquivos_base64?: string[]
+  nomes_arquivos?: string[]
+}
+
 export interface CreatePostRequest {
   title: string
   content: string
@@ -12,7 +43,11 @@ export interface CreatePostRequest {
 }
 
 export interface UpdatePostRequest extends Partial<CreatePostRequest> {
-  id: number
+  id: string | number
+  // Lista de arquivos já existentes (base64) a serem mantidos na atualização
+  existingArquivosBase64?: string[]
+  // Nomes para os arquivos existentes (mesma ordem de existingArquivosBase64)
+  existingNomesArquivos?: string[]
 }
 
 export interface PostResponse {
@@ -23,14 +58,20 @@ export interface PostResponse {
 
 export class PostsService {
   // Mapear dados da API para o formato esperado pelo frontend
-  private static mapApiPostToTransparencyPost(apiPost: any): TransparencyPost {
-    return {
-      id: apiPost.id,
-      title: apiPost.titulo,
-      date: new Date(apiPost.created_at).toLocaleDateString('pt-BR'),
-      excerpt: apiPost.conteudo ? apiPost.conteudo.substring(0, 150) + '...' : '',
-      type: apiPost.tipo
-    }
+  private static mapApiPostToTransparencyPost(apiPost: ApiPost): TransparencyPost {
+    const id = (apiPost.id ?? apiPost.postagem_id ?? '') as string
+    const title = (apiPost.titulo ?? apiPost.postagem_titulo ?? '') as string
+    const createdAt = (apiPost.created_at ?? apiPost.postagem_created_at ?? '') as string
+    const content = (apiPost.conteudo ?? apiPost.postagem_conteudo ?? '') as string
+    const type = (apiPost.tipo ?? apiPost.postagem_tipo ?? '') as string
+
+    const date = createdAt && !Number.isNaN(Date.parse(createdAt))
+      ? new Date(createdAt).toLocaleDateString('pt-BR')
+      : ''
+
+    const excerpt = content ? `${content.substring(0, 150)}...` : ''
+
+    return { id, title, date, excerpt, type }
   }
 
   static async getAllPostsMeta(): Promise<TransparencyPost[]> {
@@ -39,21 +80,24 @@ export class PostsService {
 
   // Buscar todos os posts
   static async getAllPosts(): Promise<TransparencyPost[]> {
-    const apiPosts = await ApiClient.get<any[]>(API_CONFIG.ENDPOINTS.POSTS.LIST)
+    const apiPosts = await ApiClient.get<ApiPost[]>(API_CONFIG.ENDPOINTS.POSTS.LIST)
     return apiPosts.map(post => this.mapApiPostToTransparencyPost(post))
   }
 
   static async getPostsByTypeNoBase64(type: TransparencyCategory): Promise<TransparencyPost[]> {
-    const apiPosts = await ApiClient.get<any[]>(`/postagens/tipo-sem-arquivos/${encodeURIComponent(type)}`)
-    return apiPosts.map(post => ({
-      id: post.postagem_id,
-      title: post.postagem_titulo,
-      date: new Date(post.postagem_created_at).toLocaleDateString('pt-BR'),
-      excerpt: post.postagem_conteudo ? post.postagem_conteudo.substring(0, 150) + '...' : '',
-      type: post.postagem_tipo,
-      content: post.postagem_conteudo,
-      updatedAt: post.postagem_updated_at,
-    }))
+    const apiPosts = await ApiClient.get<ApiPost[]>(`/postagens/tipo-sem-arquivos/${encodeURIComponent(type)}`)
+    return apiPosts.map(post => {
+      const id = (post.postagem_id ?? post.id ?? '') as string
+      const title = (post.postagem_titulo ?? post.titulo ?? '') as string
+      const createdAt = (post.postagem_created_at ?? post.created_at ?? '') as string
+      const date = createdAt && !Number.isNaN(Date.parse(createdAt))
+        ? new Date(createdAt).toLocaleDateString('pt-BR')
+        : ''
+      const content = (post.postagem_conteudo ?? post.conteudo ?? '') as string
+      const typeStr = (post.postagem_tipo ?? post.tipo ?? '') as string
+      const excerpt = content ? `${content.substring(0, 150)}...` : ''
+      return { id, title, date, excerpt, type: typeStr }
+    })
   }
   // Buscar posts por categoria
   static async getPostsByCategory(category: TransparencyCategory): Promise<TransparencyPost[]> {
@@ -65,57 +109,61 @@ export class PostsService {
   }
 
   // Mapear dados da API para documento completo
-  private static mapApiPostToTransparencyDocument(apiPost: any): TransparencyDocumentData {
-    // Usar created_at que vem da API no formato ISO
-    const formattedDate = apiPost.created_at && !isNaN(Date.parse(apiPost.created_at))
-      ? new Date(apiPost.created_at).toLocaleDateString('pt-BR')
-      : apiPost.postagem_created_at && !isNaN(Date.parse(apiPost.postagem_created_at))
-        ? new Date(apiPost.postagem_created_at).toLocaleDateString('pt-BR')
-        : ''
+  private static mapApiPostToTransparencyDocument(apiPost: ApiPost): TransparencyDocumentData {
+    // Datas
+    const createdAt = (apiPost.created_at ?? apiPost.postagem_created_at ?? '') as string
+    const date = createdAt && !Number.isNaN(Date.parse(createdAt))
+      ? new Date(createdAt).toLocaleDateString('pt-BR')
+      : ''
 
-    const baseTitle: string = (apiPost.titulo || apiPost.postagem_titulo || 'documento') as string
-    const nomesArquivos: string[] | undefined = Array.isArray(apiPost.nomes_arquivos)
-      ? (apiPost.nomes_arquivos as string[])
-      : undefined
+    // Campos básicos
+    const id = (apiPost.id ?? apiPost.postagem_id ?? '') as string
+    const title = (apiPost.titulo ?? apiPost.postagem_titulo ?? '') as string
+    const type = (apiPost.tipo ?? apiPost.postagem_tipo ?? '') as string
+    const content = (apiPost.conteudo ?? apiPost.postagem_conteudo ?? 'Conteúdo não disponível') as string
+
+    // Anexos
+    const base64List = Array.isArray(apiPost.arquivos_base64) ? apiPost.arquivos_base64 : []
+    const nomes = Array.isArray(apiPost.nomes_arquivos) ? apiPost.nomes_arquivos : []
+
+    const safeTitleName = title
+      .replace(/[^a-zA-Z0-9\s]/g, '')
+      .replace(/\s+/g, '_')
+      .substring(0, 30) || 'documento'
+
+    const attachments = base64List.map((arquivo, index) => {
+      const providedName = nomes[index]
+      const hasProvided = typeof providedName === 'string' && providedName.trim().length > 0
+      let name = hasProvided ? providedName : ''
+      if (!name) {
+        name = base64List.length === 1 ? `${safeTitleName}.pdf` : `${safeTitleName}_${index + 1}.pdf`
+      }
+      return {
+        name,
+        size: 'Tamanho não informado',
+        url: arquivo,
+        providedName: hasProvided,
+      }
+    })
 
     return {
-      id: apiPost.id || apiPost.postagem_id,
-      title: apiPost.titulo || apiPost.postagem_titulo,
-      date: formattedDate,
-      type: apiPost.tipo || apiPost.postagem_tipo,
-      author: 'Administração', // Valor padrão já que a API não retorna autor
-      content: apiPost.conteudo || apiPost.postagem_conteudo || 'Conteúdo não disponível',
-      attachments: apiPost.arquivos_base64?.map((arquivo: string, index: number) => {
-        // Tentar usar o nome real vindo da API (nomes_arquivos) mantendo o mesmo índice
-        const apiFileName = nomesArquivos?.[index]
-
-        // Caso não exista, criar nome baseado no título da postagem
-        const safeTitleName = baseTitle
-          .replace(/[^a-zA-Z0-9\s]/g, '') // Remove caracteres especiais
-          .replace(/\s+/g, '_') // Substitui espaços por underscore
-          .substring(0, 30) // Limita a 30 caracteres
-
-        return {
-          name: apiFileName && typeof apiFileName === 'string' && apiFileName.trim().length > 0
-            ? apiFileName
-            : (apiPost.arquivos_base64.length === 1
-              ? `${safeTitleName}.pdf`
-              : `${safeTitleName}_${index + 1}.pdf`),
-          size: 'Tamanho não informado',
-          url: arquivo // Base64 do arquivo
-        }
-      }) || []
+      id,
+      title,
+      date,
+      type,
+      author: 'Administração',
+      content,
+      attachments,
     }
   }
 
   // Buscar post completo por ID
   static async getPostById(id: string): Promise<TransparencyDocumentData> {
-    const apiPost = await ApiClient.get<any>(API_CONFIG.ENDPOINTS.POSTS.GET_BY_ID(id))
+    const apiPost = await ApiClient.get<ApiPost>(API_CONFIG.ENDPOINTS.POSTS.GET_BY_ID(id))
     return this.mapApiPostToTransparencyDocument(apiPost)
   }
   // Criar novo post
   static async createPost(data: CreatePostRequest): Promise<PostResponse> {
-    // Converter arquivos para base64 se existirem
     let arquivos_base64: string[] = []
     let nomes_arquivos: string[] = []
 
@@ -131,14 +179,12 @@ export class PostsService {
       }
     }
 
-    const payload = {
-      titulo: data.title,      // Backend espera 'titulo'
-      conteudo: data.content,  // Backend espera 'conteudo'
-      tipo: data.type,         // Backend espera 'tipo'
-      arquivos_base64,         // Backend espera 'arquivos_base64'
-      nomes_arquivos: data.nomes_arquivos && data.nomes_arquivos.length > 0
-        ? data.nomes_arquivos
-        : nomes_arquivos,
+    const payload: PostPayload = {
+      titulo: data.title,
+      conteudo: data.content,
+      tipo: data.type,
+      arquivos_base64,
+      nomes_arquivos: (data.nomes_arquivos && data.nomes_arquivos.length > 0) ? data.nomes_arquivos : nomes_arquivos,
     }
 
     return ApiClient.post<PostResponse>(API_CONFIG.ENDPOINTS.POSTS.CREATE, payload)
@@ -162,21 +208,19 @@ export class PostsService {
     })
   }
 
-  // Atualizar post
   static async updatePost(data: UpdatePostRequest): Promise<PostResponse> {
     const { id, ...updateData } = data
 
-    // Converter arquivos para base64 se existirem
-    let arquivos_base64: string[] = []
-    let nomes_arquivos: string[] = []
+    let newArquivosBase64: string[] = []
+    let newNomesArquivos: string[] = []
 
     if (updateData.files && updateData.files.length > 0) {
 
       for (const file of updateData.files) {
         try {
           const base64 = await this.fileToBase64(file)
-          arquivos_base64.push(base64)
-          nomes_arquivos.push(file.name)
+          newArquivosBase64.push(base64)
+          newNomesArquivos.push(file.name)
         } catch (error) {
           console.error(`❌ Erro ao converter arquivo ${file.name}:`, error)
           throw new Error(`Erro ao processar arquivo: ${file.name}`)
@@ -184,16 +228,54 @@ export class PostsService {
       }
     }
 
-    // Converter nomes dos campos para português
-    const payload: any = {}
-    if (updateData.title) payload.titulo = updateData.title
-    if (updateData.content) payload.conteudo = updateData.content
-    if (updateData.type) payload.tipo = updateData.type
-    if (arquivos_base64.length > 0) {
-      payload.arquivos_base64 = arquivos_base64
-      payload.nomes_arquivos = (updateData as any).nomes_arquivos && (updateData as any).nomes_arquivos.length > 0
-        ? (updateData as any).nomes_arquivos
-        : nomes_arquivos
+    const payload: PostPayload = {}
+    if (updateData.title) {
+      payload.titulo = updateData.title
+    }
+    if (updateData.content) {
+      payload.conteudo = updateData.content
+    }
+    if (updateData.type) {
+      payload.tipo = updateData.type
+    }
+
+    const existingProvided = Array.isArray(updateData.existingArquivosBase64)
+    const hasNew = newArquivosBase64.length > 0
+
+    if (existingProvided || hasNew) {
+      const combinedArquivos: string[] = []
+      const combinedNomes: string[] = []
+
+      const existing = existingProvided ? (updateData.existingArquivosBase64 ?? []) : []
+      const existingNames = existingProvided ? (updateData.existingNomesArquivos ?? []) : []
+
+      for (let i = 0; i < existing.length; i++) {
+        combinedArquivos.push(existing[i])
+      }
+
+      for (let i = 0; i < newArquivosBase64.length; i++) {
+        combinedArquivos.push(newArquivosBase64[i])
+      }
+      
+      const providedAllNames = updateData.nomes_arquivos
+      const expectedLen = existing.length + newArquivosBase64.length
+      if (providedAllNames && providedAllNames.length === expectedLen) {
+        payload.arquivos_base64 = combinedArquivos
+        payload.nomes_arquivos = providedAllNames
+      } else {
+        for (let i = 0; i < existing.length; i++) {
+          combinedNomes.push(existingNames[i] ?? '')
+        }
+        if (newArquivosBase64.length > 0) {
+          const providedNew = providedAllNames ?? []
+          for (let i = 0; i < newArquivosBase64.length; i++) {
+            const name = providedNew[i] ?? newNomesArquivos[i]
+            combinedNomes.push(name)
+          }
+        }
+        payload.arquivos_base64 = combinedArquivos
+        payload.nomes_arquivos = combinedNomes
+      }
     }
 
     return ApiClient.put<PostResponse>(API_CONFIG.ENDPOINTS.POSTS.UPDATE(id.toString()), payload)

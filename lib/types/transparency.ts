@@ -4,6 +4,8 @@ export interface DocumentAttachment {
   name: string
   size: string
   url?: string
+  // true quando veio de nomes_arquivos da API (não é nome gerado para exibição)
+  providedName?: boolean
 }
 
 export interface TransparencyDocumentData {

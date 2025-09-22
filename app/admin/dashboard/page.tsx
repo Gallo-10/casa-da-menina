@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { FileText, ImageIcon, LayoutDashboard, LogOut, Plus, Trash2 } from "lucide-react"
+import { FileText, ImageIcon, LayoutDashboard, LogOut, Plus, Trash2, Pencil } from "lucide-react"
 import { useAuthGuard } from "@/lib/hooks/use-auth-guard"
 import { AuthService } from "@/lib/services/auth.service"
 import { PostsService } from "@/lib/services/posts.service"
@@ -39,7 +39,7 @@ export default function AdminDashboard() {
           title: post.postagem_titulo,
           content: post.postagem_conteudo,
           type: post.postagem_tipo,
-          date: formattedDate, 
+          date: formattedDate,
           updatedAt: post.postagem_updated_at,
           excerpt: post.postagem_conteudo?.slice(0, 150) + (post.postagem_conteudo?.length > 150 ? '...' : ''),
         }
@@ -275,22 +275,30 @@ export default function AdminDashboard() {
                               <td className="py-3 px-2">{post.date}</td>
                               <td className="py-3 px-2">{post.type}</td>
                               <td className="py-3 px-2 text-right">
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => handleDeletePost(post.id)}
-                                  disabled={deletingPostId === post.id}
-                                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                >
-                                  {deletingPostId === post.id ? (
-                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
-                                  ) : (
-                                    <>
-                                      <Trash2 className="h-4 w-4 mr-1" />
-                                      Deletar
-                                    </>
-                                  )}
-                                </Button>
+                                <div className="flex items-center justify-end gap-2">
+                                  <Link href={`/admin/dashboard/posts/${post.id}/edit`}>
+                                    <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700 hover:bg-blue-50">
+                                      <Pencil className="h-4 w-4 mr-1" />
+                                      Editar
+                                    </Button>
+                                  </Link>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleDeletePost(post.id)}
+                                    disabled={deletingPostId === post.id}
+                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                  >
+                                    {deletingPostId === post.id ? (
+                                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
+                                    ) : (
+                                      <>
+                                        <Trash2 className="h-4 w-4 mr-1" />
+                                        Deletar
+                                      </>
+                                    )}
+                                  </Button>
+                                </div>
                               </td>
                             </tr>
                           ))
