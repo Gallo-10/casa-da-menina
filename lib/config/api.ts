@@ -28,15 +28,18 @@ export const API_CONFIG = {
     'Accept': 'application/json'
   },
 
-  // API Key (pode vir de variável de ambiente ou fallback)
-  // getApiKey retorna uma Promise<string> para que a resolução seja assíncrona
   getApiKey: async (): Promise<string> => {
     const val = await SecretManagerApi.getSecret('API_KEY')
-    return typeof val === 'string' ? val : String(val ?? '')
+    return val
   }
 }
 
 // Função helper para construir URLs completas
+export const buildApiUrl = (endpoint: string): string => {
+  const isAbsolute = /^https?:\/\//i.test(endpoint)
+  return isAbsolute ? endpoint : `${API_CONFIG.BASE_URL}${endpoint}`
+}
+
 // Função para obter headers com autenticação
 export const getAuthHeaders = async (): Promise<Record<string, string>> => {
   const apiKey = await API_CONFIG.getApiKey()

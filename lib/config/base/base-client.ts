@@ -10,6 +10,30 @@ export class ApiClient {
     const isAbsolute = /^https?:\/\//i.test(endpoint)
     const url = isAbsolute ? endpoint : `${this.BASE_URL}${endpoint}`
 
+    // Determine if request targets our backend origin
+    const isBackendOrigin = (() => {
+      if (!isAbsolute) return true
+      try {
+        const u = new URL(url)
+        return u.origin === this.BASE_URL
+      } catch {
+        return false
+      }
+    })()
+
+    // Detect if we're calling the Secret Manager endpoint to avoid recursion
+    const isSecretEndpoint = (() => {
+      if (!isAbsolute) {
+        return endpoint.startsWith('/secret-utils')
+      }
+      try {
+        const u = new URL(url)
+        return isBackendOrigin && u.pathname.startsWith('/secret-utils')
+      } catch {
+        return false
+      }
+    })()
+
     const incomingHeaders = (options.headers || {}) as Record<string, string>
     const headers: Record<string, string> = {
       // Por padrão aceite qualquer tipo de resposta
@@ -26,20 +50,22 @@ export class ApiClient {
     }
 
     // x-api-key: respeita header existente, senão usa env com fallback
-    const hasApiKeyHeader = Object.keys(headers).some(
-      (k) => k.toLowerCase() === 'x-api-key'
-    )
-    if (!hasApiKeyHeader) {
-      const apiKey = await SecretManagerApi.getSecret('API_KEY');
-      headers['x-api-key'] = apiKey
+    const hasApiKeyHeader = Object.keys(headers).some((k) => k.toLowerCase() === 'x-api-key')
+    if (isBackendOrigin && !hasApiKeyHeader && !isSecretEndpoint) {
+      // Fetch API key from Secret Manager only for our backend and non-secret endpoint calls
+      try {
+        const apiKey = await SecretManagerApi.getSecret('API_KEY')
+        headers['x-api-key'] = apiKey as unknown as string
+      } catch (e) {
+        // Leave without x-api-key; downstream may still succeed (e.g., public endpoints)
+        console.warn('Could not retrieve API key from Secret Manager:', e)
+      }
     }
 
     // Authorization: inclui se não fornecido nos headers e existir token no browser
-    const hasAuthHeader = Object.keys(headers).some(
-      (k) => k.toLowerCase() === 'authorization'
-    )
+    const hasAuthHeader = Object.keys(headers).some((k) => k.toLowerCase() === 'authorization')
     const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null
-    if (!hasAuthHeader && token) {
+    if (isBackendOrigin && !hasAuthHeader && token) {
       headers['Authorization'] = `Bearer ${token}`
     }
 
@@ -94,9 +120,12 @@ export class ApiClient {
 
     const headers: Record<string, string> = {}
 
-    const apiKey = process.env.NEXT_PUBLIC_API_KEY
-    if (apiKey) {
-      headers['x-api-key'] = apiKey
+    // Fetch API key from Secret Manager for uploads as well (no env vars)
+    try {
+      const apiKey = await SecretManagerApi.getSecret('API_KEY')
+      headers['x-api-key'] = apiKey as unknown as string
+    } catch (e) {
+      console.warn('Could not retrieve API key from Secret Manager for upload:', e)
     }
 
     // Adicionar token de autenticação se existir

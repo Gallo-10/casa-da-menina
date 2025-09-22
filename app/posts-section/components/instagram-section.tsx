@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { InstagramGrid } from "./instagram-grid"
 import { GraphApiResponse, GraphPaging, GraphFeedPost } from '@/lib/api/graph-api/graph-api.interface'
 import { GraphApi } from '@/lib/api/graph-api/instagram.api'
+import { Button } from '@/components/ui/button'
 
 interface InstagramSectionProps extends Partial<GraphApiResponse> {
   title?: string
@@ -23,6 +24,7 @@ export function InstagramSection({
   const [fetched, setFetched] = useState<GraphApiResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isTesting, setIsTesting] = useState(false)
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -42,6 +44,23 @@ export function InstagramSection({
 
     fetchPosts()
   }, [])
+
+  const handleTestInstagram = async () => {
+    try {
+      setIsTesting(true)
+      const resp = await GraphApi.getFeedPosts()
+      console.log('Instagram API test result (section):', resp)
+      setFetched(resp)
+      if (!resp?.data?.length) {
+        alert('Teste concluído: nenhum post retornado.')
+      }
+    } catch (e) {
+      console.error('Erro ao testar Instagram API (section):', e)
+      alert('Erro ao testar Instagram API. Verifique o console.')
+    } finally {
+      setIsTesting(false)
+    }
+  }
 
   const gridResponse: GraphApiResponse = fetched ?? { data: data as GraphFeedPost[], paging: defaultPaging }
   return (

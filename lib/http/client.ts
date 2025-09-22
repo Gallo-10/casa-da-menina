@@ -8,12 +8,17 @@ export class ApiClient {
   ): Promise<T> {
     const url = buildApiUrl(endpoint)
 
+    // Await async auth headers before constructing the final config
+    const authHeaders = await getAuthHeaders()
+    const incoming = (options.headers || {}) as Record<string, string>
+    const headers: Record<string, string> = {
+      ...authHeaders,
+      ...incoming,
+    }
+
     const config: RequestInit = {
-      headers: {
-        ...getAuthHeaders(),
-        ...options.headers,
-      },
       ...options,
+      headers,
     }
 
     try {
@@ -55,8 +60,12 @@ export class ApiClient {
   static async upload<T = any>(endpoint: string, formData: FormData): Promise<T> {
     const url = buildApiUrl(endpoint)
 
-    const headers: Record<string, string> = {
-      'x-api-key': API_CONFIG.API_KEY
+    const headers: Record<string, string> = {}
+    try {
+      const apiKey = await API_CONFIG.getApiKey()
+      headers['x-api-key'] = apiKey
+    } catch (e) {
+      console.warn('Could not retrieve API key for upload:', e)
     }
 
     // Adicionar token de autenticação se existir
