@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -18,6 +18,13 @@ export default function AdminLoginPage() {
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+
+  // Se já estiver autenticado (token válido no storage), redirecionar para o dashboard
+  useEffect(() => {
+    if (AuthService.isAuthenticated()) {
+      router.replace("/admin/dashboard")
+    }
+  }, [router])
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")

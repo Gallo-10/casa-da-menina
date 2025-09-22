@@ -7,6 +7,8 @@ export interface CreatePostRequest {
   content: string
   type: TransparencyCategory
   files?: File[]
+  // Nomes reais dos arquivos vindos da página
+  nomes_arquivos?: string[]
 }
 
 export interface UpdatePostRequest extends Partial<CreatePostRequest> {
@@ -71,6 +73,11 @@ export class PostsService {
         ? new Date(apiPost.postagem_created_at).toLocaleDateString('pt-BR')
         : ''
 
+    const baseTitle: string = (apiPost.titulo || apiPost.postagem_titulo || 'documento') as string
+    const nomesArquivos: string[] | undefined = Array.isArray(apiPost.nomes_arquivos)
+      ? (apiPost.nomes_arquivos as string[])
+      : undefined
+
     return {
       id: apiPost.id || apiPost.postagem_id,
       title: apiPost.titulo || apiPost.postagem_titulo,
@@ -79,16 +86,21 @@ export class PostsService {
       author: 'Administração', // Valor padrão já que a API não retorna autor
       content: apiPost.conteudo || apiPost.postagem_conteudo || 'Conteúdo não disponível',
       attachments: apiPost.arquivos_base64?.map((arquivo: string, index: number) => {
-        // Criar nome baseado no título da postagem
-        const safeTitleName = apiPost.titulo
+        // Tentar usar o nome real vindo da API (nomes_arquivos) mantendo o mesmo índice
+        const apiFileName = nomesArquivos?.[index]
+
+        // Caso não exista, criar nome baseado no título da postagem
+        const safeTitleName = baseTitle
           .replace(/[^a-zA-Z0-9\s]/g, '') // Remove caracteres especiais
           .replace(/\s+/g, '_') // Substitui espaços por underscore
           .substring(0, 30) // Limita a 30 caracteres
 
         return {
-          name: apiPost.arquivos_base64.length === 1
-            ? `${safeTitleName}.pdf`
-            : `${safeTitleName}_${index + 1}.pdf`,
+          name: apiFileName && typeof apiFileName === 'string' && apiFileName.trim().length > 0
+            ? apiFileName
+            : (apiPost.arquivos_base64.length === 1
+              ? `${safeTitleName}.pdf`
+              : `${safeTitleName}_${index + 1}.pdf`),
           size: 'Tamanho não informado',
           url: arquivo // Base64 do arquivo
         }
@@ -105,12 +117,14 @@ export class PostsService {
   static async createPost(data: CreatePostRequest): Promise<PostResponse> {
     // Converter arquivos para base64 se existirem
     let arquivos_base64: string[] = []
+    let nomes_arquivos: string[] = []
 
     if (data.files && data.files.length > 0) {
       for (const file of data.files) {
         try {
           const base64 = await this.fileToBase64(file)
           arquivos_base64.push(base64)
+          nomes_arquivos.push(file.name)
         } catch (error) {
           throw new Error(`Erro ao processar arquivo: ${file.name}`)
         }
@@ -122,6 +136,9 @@ export class PostsService {
       conteudo: data.content,  // Backend espera 'conteudo'
       tipo: data.type,         // Backend espera 'tipo'
       arquivos_base64,         // Backend espera 'arquivos_base64'
+      nomes_arquivos: data.nomes_arquivos && data.nomes_arquivos.length > 0
+        ? data.nomes_arquivos
+        : nomes_arquivos,
     }
 
     return ApiClient.post<PostResponse>(API_CONFIG.ENDPOINTS.POSTS.CREATE, payload)
@@ -151,6 +168,7 @@ export class PostsService {
 
     // Converter arquivos para base64 se existirem
     let arquivos_base64: string[] = []
+    let nomes_arquivos: string[] = []
 
     if (updateData.files && updateData.files.length > 0) {
 
@@ -158,6 +176,7 @@ export class PostsService {
         try {
           const base64 = await this.fileToBase64(file)
           arquivos_base64.push(base64)
+          nomes_arquivos.push(file.name)
         } catch (error) {
           console.error(`❌ Erro ao converter arquivo ${file.name}:`, error)
           throw new Error(`Erro ao processar arquivo: ${file.name}`)
@@ -170,7 +189,12 @@ export class PostsService {
     if (updateData.title) payload.titulo = updateData.title
     if (updateData.content) payload.conteudo = updateData.content
     if (updateData.type) payload.tipo = updateData.type
-    if (arquivos_base64.length > 0) payload.arquivos_base64 = arquivos_base64
+    if (arquivos_base64.length > 0) {
+      payload.arquivos_base64 = arquivos_base64
+      payload.nomes_arquivos = (updateData as any).nomes_arquivos && (updateData as any).nomes_arquivos.length > 0
+        ? (updateData as any).nomes_arquivos
+        : nomes_arquivos
+    }
 
     return ApiClient.put<PostResponse>(API_CONFIG.ENDPOINTS.POSTS.UPDATE(id.toString()), payload)
   }

@@ -22,6 +22,7 @@ export default function NewPostPage() {
   const [content, setContent] = useState("")
   const [type, setType] = useState("")
   const [files, setFiles] = useState<FileList | null>(null)
+  const [fileNames, setFileNames] = useState<string[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Mostrar loading enquanto verifica autenticação
@@ -54,6 +55,7 @@ export default function NewPostPage() {
         content,
         type: type as TransparencyCategory,
         files: filesArray,
+        nomes_arquivos: fileNames && fileNames.length > 0 ? fileNames : filesArray?.map(f => f.name)
       }
 
 
@@ -61,7 +63,7 @@ export default function NewPostPage() {
 
       router.push("/admin/dashboard?tab=posts")
     } catch (error) {
-      
+
     } finally {
       setIsSubmitting(false)
     }
@@ -128,7 +130,19 @@ export default function NewPostPage() {
               <div className="border-2 border-dashed border-gray-300 rounded-md p-6 flex flex-col items-center justify-center">
                 <Upload className="h-8 w-8 text-gray-400 mb-2" />
                 <p className="text-sm text-gray-500 mb-2">Arraste arquivos aqui ou clique para selecionar</p>
-                <Input id="files" type="file" multiple onChange={(e) => setFiles(e.target.files)} className="hidden" />
+                <Input
+                  id="files"
+                  type="file"
+                  multiple
+                  onChange={(e) => {
+                    const fl = e.target.files
+                    setFiles(fl)
+                    // Capture file names at selection time in the same order
+                    const names = fl ? Array.from(fl).map(f => f.name) : []
+                    setFileNames(names)
+                  }}
+                  className="hidden"
+                />
                 <Button type="button" variant="outline" onClick={() => document.getElementById("files")?.click()}>
                   Selecionar Arquivos
                 </Button>
