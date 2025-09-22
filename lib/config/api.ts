@@ -1,3 +1,5 @@
+import { SecretManagerApi } from "../api/secret-manager/secret-manager.api"
+
 // Configuração centralizada da API
 export const API_CONFIG = {
   BASE_URL: 'https://backend.casadamenina.com',
@@ -27,19 +29,20 @@ export const API_CONFIG = {
   },
 
   // API Key (pode vir de variável de ambiente ou fallback)
-  API_KEY: process.env.NEXT_PUBLIC_API_KEY || 'Odie@cao10'
+  // getApiKey retorna uma Promise<string> para que a resolução seja assíncrona
+  getApiKey: async (): Promise<string> => {
+    const val = await SecretManagerApi.getSecret('API_KEY')
+    return typeof val === 'string' ? val : String(val ?? '')
+  }
 }
 
 // Função helper para construir URLs completas
-export const buildApiUrl = (endpoint: string): string => {
-  return `${API_CONFIG.BASE_URL}${endpoint}`
-}
-
 // Função para obter headers com autenticação
-export const getAuthHeaders = (): Record<string, string> => {
+export const getAuthHeaders = async (): Promise<Record<string, string>> => {
+  const apiKey = await API_CONFIG.getApiKey()
   const headers: Record<string, string> = {
     ...API_CONFIG.DEFAULT_HEADERS,
-    'x-api-key': API_CONFIG.API_KEY
+    'x-api-key': apiKey
   }
 
   // Adicionar token se disponível (apenas no browser)

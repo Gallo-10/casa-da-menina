@@ -1,3 +1,5 @@
+import { SecretManagerApi } from "@/lib/api/secret-manager/secret-manager.api";
+
 export class ApiClient {
   private static readonly BASE_URL = 'https://backend.casadamenina.com';
 
@@ -28,7 +30,7 @@ export class ApiClient {
       (k) => k.toLowerCase() === 'x-api-key'
     )
     if (!hasApiKeyHeader) {
-      const apiKey = process.env.NEXT_PUBLIC_API_KEY || 'Odie@cao10'
+      const apiKey = await SecretManagerApi.getSecret('API_KEY');
       headers['x-api-key'] = apiKey
     }
 
