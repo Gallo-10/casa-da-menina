@@ -25,7 +25,7 @@ export class PostsService {
     return {
       id: apiPost.id,
       title: apiPost.titulo,
-      date: new Date(apiPost.createdAtUtc).toLocaleDateString('pt-BR'),
+      date: new Date(apiPost.created_at).toLocaleDateString('pt-BR'),
       excerpt: apiPost.conteudo ? apiPost.conteudo.substring(0, 150) + '...' : '',
       type: apiPost.tipo
     }
@@ -34,7 +34,7 @@ export class PostsService {
   static async getAllPostsMeta(): Promise<TransparencyPost[]> {
     return ApiClient.get<TransparencyPost[]>('/postagens/sem-arquivos')
   }
-  
+
   // Buscar todos os posts
   static async getAllPosts(): Promise<TransparencyPost[]> {
     const apiPosts = await ApiClient.get<any[]>(API_CONFIG.ENDPOINTS.POSTS.LIST)
@@ -64,13 +64,20 @@ export class PostsService {
 
   // Mapear dados da API para documento completo
   private static mapApiPostToTransparencyDocument(apiPost: any): TransparencyDocumentData {
+    // Usar created_at que vem da API no formato ISO
+    const formattedDate = apiPost.created_at && !isNaN(Date.parse(apiPost.created_at))
+      ? new Date(apiPost.created_at).toLocaleDateString('pt-BR')
+      : apiPost.postagem_created_at && !isNaN(Date.parse(apiPost.postagem_created_at))
+        ? new Date(apiPost.postagem_created_at).toLocaleDateString('pt-BR')
+        : ''
+
     return {
-      id: apiPost.id,
-      title: apiPost.titulo,
-      date: new Date(apiPost.createdAtUtc).toLocaleDateString('pt-BR'),
-      type: apiPost.tipo,
+      id: apiPost.id || apiPost.postagem_id,
+      title: apiPost.titulo || apiPost.postagem_titulo,
+      date: formattedDate,
+      type: apiPost.tipo || apiPost.postagem_tipo,
       author: 'Administração', // Valor padrão já que a API não retorna autor
-      content: apiPost.conteudo || 'Conteúdo não disponível',
+      content: apiPost.conteudo || apiPost.postagem_conteudo || 'Conteúdo não disponível',
       attachments: apiPost.arquivos_base64?.map((arquivo: string, index: number) => {
         // Criar nome baseado no título da postagem
         const safeTitleName = apiPost.titulo

@@ -1,6 +1,5 @@
 // Configuração centralizada da API
 export const API_CONFIG = {
-  // URL base da API - SEMPRE usar esta configuração
   BASE_URL: 'https://backend.casadamenina.com',
 
   // Endpoints principais

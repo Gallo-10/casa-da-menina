@@ -14,10 +14,8 @@ export default function TransparencyDocument({ document, onBack }: TransparencyD
   // Função para converter base64 em blob e abrir PDF
   const openPdfFromBase64 = (base64Data: string, fileName: string) => {
     try {
-      // Remover prefixo data: se existir
       const base64String = base64Data.includes(',') ? base64Data.split(',')[1] : base64Data
 
-      // Converter base64 para bytes
       const binaryString = window.atob(base64String)
       const bytes = new Uint8Array(binaryString.length)
 
@@ -25,14 +23,11 @@ export default function TransparencyDocument({ document, onBack }: TransparencyD
         bytes[i] = binaryString.charCodeAt(i)
       }
 
-      // Criar blob PDF
       const blob = new Blob([bytes], { type: 'application/pdf' })
       const url = URL.createObjectURL(blob)
 
-      // Abrir em nova aba
       window.open(url, '_blank')
 
-      // Limpar URL após um tempo para liberar memória
       setTimeout(() => URL.revokeObjectURL(url), 1000)
     } catch (error) {
       alert('Erro ao abrir o documento. Tente novamente.')
@@ -84,10 +79,6 @@ export default function TransparencyDocument({ document, onBack }: TransparencyD
 
           <div className="space-y-4">
             <div className="flex items-center space-x-4 text-sm text-gray-600">
-              <div className="flex items-center">
-                <Calendar className="mr-1 h-4 w-4" />
-                {document.date}
-              </div>
               <div className="flex items-center">
                 <Tag className="mr-1 h-4 w-4" />
                 {document.type}

@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
-import TransparencyDocument from "@/components/transparency-document"
+import TransparencyDocument from "@/app/transparencia/components/transparency-document"
 import { PostsService } from "@/lib/services/posts.service"
 import type { TransparencyDocumentData } from "@/lib/types/transparency"
 

@@ -1,4 +1,4 @@
-import { ApiClient } from './client'
+import { ApiClient } from '../config/base/base-client'
 import type { LoginRequest, LoginResponse } from '../types/auth'
 
 export class AuthApi {

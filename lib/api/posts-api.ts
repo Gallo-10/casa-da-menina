@@ -1,4 +1,4 @@
-import { ApiClient } from './client'
+import { ApiClient } from '../config/base/base-client'
 import type { TransparencyPost, TransparencyCategory, TransparencyDocumentData } from '../types/transparency'
 
 export interface CreatePostRequest {
@@ -40,11 +40,11 @@ export class PostsApi {
     }
     return ApiClient.get<TransparencyPost[]>(`/posts?category=${encodeURIComponent(category)}`)
   }
-  
+
   static async getAllPostsMeta(): Promise<TransparencyPost[]> {
     return ApiClient.get<TransparencyPost[]>('/postagens/sem-arquivos')
   }
-  
+
   // Buscar post completo por ID (com conteúdo detalhado)
   static async getPostById(id: number): Promise<TransparencyDocumentData> {
     return ApiClient.get<TransparencyDocumentData>(`/posts/${id}`)

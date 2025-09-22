@@ -1,4 +1,4 @@
-import { ApiClient } from './client'
+import { ApiClient } from '../config/base/base-client'
 
 export interface UploadResponse {
   success: boolean

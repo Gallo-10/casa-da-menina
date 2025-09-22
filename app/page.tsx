@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { InstagramSection } from "@/app/posts-section"
 
 export default function Home() {
   return (
@@ -165,6 +166,13 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Instagram Section */}
+      <InstagramSection
+        title="Momentos Especiais"
+        subtitle="Acompanhe os momentos de alegria e aprendizado das nossas crianças através do nosso Instagram."
+        instagramUsername="casada.menina"
+      />
 
       {/* Call to Action */}
       <section className="w-full py-12 md:py-24 lg:py-32">
