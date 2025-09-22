@@ -19,12 +19,12 @@ export default function Home() {
                 Acolher, Proteger e Educar para a Vida
               </p>
             </div>
-            <div className="space-x-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center w-full sm:w-auto">
               <Link href="/sobre">
-                <Button className="bg-blue-600 hover:bg-blue-700">Conheça Nossa Missão</Button>
+                <Button className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700">Conheça Nossa Missão</Button>
               </Link>
               <Link href="/transparencia">
-                <Button variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-100">
+                <Button variant="outline" className="w-full sm:w-auto border-blue-600 text-blue-600 hover:bg-blue-100">
                   Portal da Transparência
                 </Button>
               </Link>
