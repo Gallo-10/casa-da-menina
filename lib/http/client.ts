@@ -57,7 +57,11 @@ export class ApiClient {
     return this.request<T>(endpoint, { method: 'DELETE' })
   }
 
-  static async upload<T = any>(endpoint: string, formData: FormData): Promise<T> {
+  static async upload<T = any>(
+    endpoint: string, 
+    formData: FormData,
+    method: 'POST' | 'PUT' = 'POST'
+  ): Promise<T> {
     const url = buildApiUrl(endpoint)
 
     const headers: Record<string, string> = {}
@@ -68,7 +72,6 @@ export class ApiClient {
       console.warn('Could not retrieve API key for upload:', e)
     }
 
-    // Adicionar token de autenticação se existir
     const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null
     if (token) {
       headers['Authorization'] = `Bearer ${token}`
@@ -76,12 +79,14 @@ export class ApiClient {
 
     try {
       const response = await fetch(url, {
-        method: 'POST',
+        method: method,
         headers,
         body: formData,
       })
 
       if (!response.ok) {
+        const errorBody = await response.text()
+        console.error(`Falha no Upload [${method} ${endpoint}]: ${response.status}`, errorBody)
         throw new Error(`HTTP ${response.status}: ${response.statusText}`)
       }
 
@@ -92,3 +97,4 @@ export class ApiClient {
     }
   }
 }
+

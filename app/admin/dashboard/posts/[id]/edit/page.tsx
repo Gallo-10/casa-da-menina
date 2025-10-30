@@ -23,8 +23,8 @@ export default function EditPostPage() {
   const [content, setContent] = useState("")
   const [type, setType] = useState("")
   const [files, setFiles] = useState<File[]>([])
-  const [fileNames, setFileNames] = useState<string[]>([])
   const [existingAttachments, setExistingAttachments] = useState<DocumentAttachment[]>([])
+  const [attachmentsToDelete, setAttachmentsToDelete] = useState<string[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [loadingPost, setLoadingPost] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -41,7 +41,6 @@ export default function EditPostPage() {
         setContent(post.content ?? "")
         setType((post.type as string) ?? "")
         setExistingAttachments(post.attachments || [])
-        setFileNames(post.attachments?.map(att => att.providedName ? att.name : "") || [])
       } catch (e) {
         setLoadError("Não foi possível carregar a postagem.")
       } finally {
@@ -72,21 +71,14 @@ export default function EditPostPage() {
     try {
       const filesArray = files && files.length > 0 ? files : undefined
 
-      const existingArquivosBase64 = existingAttachments
-        .map(att => att.url)
-        .filter((u): u is string => typeof u === 'string' && u.length > 0)
-
-      const existingNomesArquivos = existingAttachments.map(att => att.providedName ? att.name : "")
-
       await PostsService.updatePost({
         id: String(id),
         title,
         content,
         type: type as TransparencyCategory,
         files: filesArray,
-        nomes_arquivos: fileNames && fileNames.length > 0 ? fileNames : filesArray?.map(f => f.name),
-        existingArquivosBase64,
-        existingNomesArquivos,
+        novos_arquivos: filesArray,
+        remover_arquivos_ids: attachmentsToDelete
       })
 
       router.push("/admin/dashboard?tab=posts")
@@ -171,9 +163,13 @@ export default function EditPostPage() {
                         type="button"
                         variant="destructive"
                         onClick={() => {
+                          const attachmentToRemove = existingAttachments[idx]
+                          if (attachmentToRemove.id) {
+                            const idToDelete = attachmentToRemove.id
+                            setAttachmentsToDelete(prev => [...prev, idToDelete])
+                          }
+
                           setExistingAttachments(prev => prev.filter((_, i) => i !== idx))
-                          // Remover também o nome correspondente para manter alinhamento
-                          setFileNames(prev => prev.filter((_, i) => i !== idx))
                         }}
                       >
                         <Trash2 className="h-4 w-4 mr-2" /> Remover
@@ -199,9 +195,7 @@ export default function EditPostPage() {
                     const fl = e.target.files
                     const newFiles = fl ? Array.from(fl) : []
                     if (newFiles.length === 0) return
-                    // Acumular arquivos e nomes, mantendo os existentes nas primeiras posições
                     setFiles(prev => [...prev, ...newFiles])
-                    setFileNames(prev => [...prev, ...newFiles.map(f => f.name)])
                   }}
                   className="hidden"
                 />

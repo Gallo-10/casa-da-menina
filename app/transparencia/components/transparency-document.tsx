@@ -15,7 +15,6 @@ export default function TransparencyDocument({ document, onBack }: TransparencyD
   const openPdfFromBase64 = (base64Data: string, fileName: string) => {
     try {
       const base64String = base64Data.includes(',') ? base64Data.split(',')[1] : base64Data
-
       const binaryString = window.atob(base64String)
       const bytes = new Uint8Array(binaryString.length)
 

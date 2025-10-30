@@ -1,6 +1,7 @@
 // Tipos e interfaces para o Portal da Transparência
 
 export interface DocumentAttachment {
+  id?: string
   name: string
   size: string
   url?: string

@@ -1,6 +1,6 @@
 import { ApiClient } from '../http/client'
 import { API_CONFIG } from '../config/api'
-import type { TransparencyPost, TransparencyCategory, TransparencyDocumentData } from '../types/transparency'
+import type { TransparencyPost, TransparencyCategory, TransparencyDocumentData, DocumentAttachment } from '../types/transparency'
 
 // Tipos das respostas da API (apenas campos usados aqui)
 interface ApiPostBase {
@@ -38,20 +38,17 @@ export interface CreatePostRequest {
   content: string
   type: TransparencyCategory
   files?: File[]
-  // Nomes reais dos arquivos vindos da página
   nomes_arquivos?: string[]
 }
 
 export interface UpdatePostRequest extends Partial<CreatePostRequest> {
   id: string | number
-  // Lista de arquivos já existentes (base64) a serem mantidos na atualização
-  existingArquivosBase64?: string[]
-  // Nomes para os arquivos existentes (mesma ordem de existingArquivosBase64)
-  existingNomesArquivos?: string[]
+  novos_arquivos?: File[]
+  remover_arquivos_ids?: string[]
 }
 
 export interface PostResponse {
-  id: number
+  id: string
   message: string
   success: boolean
 }
@@ -109,7 +106,7 @@ export class PostsService {
   }
 
   // Mapear dados da API para documento completo
-  private static mapApiPostToTransparencyDocument(apiPost: ApiPost): TransparencyDocumentData {
+ private static mapApiPostToTransparencyDocument(apiPost: any): TransparencyDocumentData { // Mude para 'any' para aceitar a resposta do backend
     // Datas
     const createdAt = (apiPost.created_at ?? apiPost.postagem_created_at ?? '') as string
     const date = createdAt && !Number.isNaN(Date.parse(createdAt))
@@ -122,27 +119,21 @@ export class PostsService {
     const type = (apiPost.tipo ?? apiPost.postagem_tipo ?? '') as string
     const content = (apiPost.conteudo ?? apiPost.postagem_conteudo ?? 'Conteúdo não disponível') as string
 
-    // Anexos
-    const base64List = Array.isArray(apiPost.arquivos_base64) ? apiPost.arquivos_base64 : []
-    const nomes = Array.isArray(apiPost.nomes_arquivos) ? apiPost.nomes_arquivos : []
+    // [LÓGICA DE ANEXOS CORRIGIDA]
+    // O backend envia 'arquivos' (com IDs) E 'arquivos_base64' (para visualização)
+    const base64List: string[] = Array.isArray(apiPost.arquivos_base64) ? apiPost.arquivos_base64 : []
+    const arquivosMetadados: any[] = Array.isArray(apiPost.arquivos) ? apiPost.arquivos : []
 
-    const safeTitleName = title
-      .replace(/[^a-zA-Z0-9\s]/g, '')
-      .replace(/\s+/g, '_')
-      .substring(0, 30) || 'documento'
+    const attachments: DocumentAttachment[] = arquivosMetadados.map((arquivoMeta, index) => {
+      const nomeOriginal = arquivoMeta.nome_original || 'arquivo.bin'
+      const base64Url = base64List[index] || undefined // Pega o Base64 correspondente
 
-    const attachments = base64List.map((arquivo, index) => {
-      const providedName = nomes[index]
-      const hasProvided = typeof providedName === 'string' && providedName.trim().length > 0
-      let name = hasProvided ? providedName : ''
-      if (!name) {
-        name = base64List.length === 1 ? `${safeTitleName}.pdf` : `${safeTitleName}_${index + 1}.pdf`
-      }
       return {
-        name,
-        size: 'Tamanho não informado',
-        url: arquivo,
-        providedName: hasProvided,
+        id: arquivoMeta.id, // <-- O ID que precisamos para deletar
+        name: nomeOriginal,
+        size: `${(arquivoMeta.tamanho_bytes / 1024).toFixed(1)} KB`,
+        url: base64Url,
+        providedName: true,
       }
     })
 
@@ -159,35 +150,35 @@ export class PostsService {
 
   // Buscar post completo por ID
   static async getPostById(id: string): Promise<TransparencyDocumentData> {
-    const apiPost = await ApiClient.get<ApiPost>(API_CONFIG.ENDPOINTS.POSTS.GET_BY_ID(id))
+    const apiPost = await ApiClient.get<any>(API_CONFIG.ENDPOINTS.POSTS.GET_BY_ID(id)) // Mude para 'any'
     return this.mapApiPostToTransparencyDocument(apiPost)
   }
   // Criar novo post
   static async createPost(data: CreatePostRequest): Promise<PostResponse> {
-    let arquivos_base64: string[] = []
-    let nomes_arquivos: string[] = []
+    // Não vamos mais converter para Base64. Vamos usar FormData.
+    const formData = new FormData()
 
+    formData.append('titulo', data.title)
+    formData.append('conteudo', data.content)
+    formData.append('tipo', data.type)
+
+    // Adiciona nomes customizados (se existirem)
+    if (data.nomes_arquivos && data.nomes_arquivos.length > 0) {
+      data.nomes_arquivos.forEach((nome) => {
+        formData.append('nomes_arquivos', nome)
+      })
+    }
+    
+    // Adiciona os arquivos
     if (data.files && data.files.length > 0) {
-      for (const file of data.files) {
-        try {
-          const base64 = await this.fileToBase64(file)
-          arquivos_base64.push(base64)
-          nomes_arquivos.push(file.name)
-        } catch (error) {
-          throw new Error(`Erro ao processar arquivo: ${file.name}`)
-        }
-      }
+      data.files.forEach((file) => {
+        // O backend espera um array de arquivos no campo 'arquivos'
+        formData.append('arquivos', file) 
+      })
     }
 
-    const payload: PostPayload = {
-      titulo: data.title,
-      conteudo: data.content,
-      tipo: data.type,
-      arquivos_base64,
-      nomes_arquivos: (data.nomes_arquivos && data.nomes_arquivos.length > 0) ? data.nomes_arquivos : nomes_arquivos,
-    }
-
-    return ApiClient.post<PostResponse>(API_CONFIG.ENDPOINTS.POSTS.CREATE, payload)
+    // Usa ApiClient.upload (que é para FormData) em vez de .post (JSON)
+    return ApiClient.upload<PostResponse>(API_CONFIG.ENDPOINTS.POSTS.CREATE, formData)
   }
 
   // Método auxiliar para converter arquivo para base64
@@ -211,74 +202,39 @@ export class PostsService {
   static async updatePost(data: UpdatePostRequest): Promise<PostResponse> {
     const { id, ...updateData } = data
 
-    let newArquivosBase64: string[] = []
-    let newNomesArquivos: string[] = []
+    const formData = new FormData()
 
-    if (updateData.files && updateData.files.length > 0) {
-
-      for (const file of updateData.files) {
-        try {
-          const base64 = await this.fileToBase64(file)
-          newArquivosBase64.push(base64)
-          newNomesArquivos.push(file.name)
-        } catch (error) {
-          console.error(`❌ Erro ao converter arquivo ${file.name}:`, error)
-          throw new Error(`Erro ao processar arquivo: ${file.name}`)
-        }
-      }
-    }
-
-    const payload: PostPayload = {}
+    // Adiciona campos de texto se eles foram alterados
     if (updateData.title) {
-      payload.titulo = updateData.title
+      formData.append('titulo', updateData.title)
     }
     if (updateData.content) {
-      payload.conteudo = updateData.content
+      formData.append('conteudo', updateData.content)
     }
     if (updateData.type) {
-      payload.tipo = updateData.type
+      formData.append('tipo', updateData.type)
     }
 
-    const existingProvided = Array.isArray(updateData.existingArquivosBase64)
-    const hasNew = newArquivosBase64.length > 0
-
-    if (existingProvided || hasNew) {
-      const combinedArquivos: string[] = []
-      const combinedNomes: string[] = []
-
-      const existing = existingProvided ? (updateData.existingArquivosBase64 ?? []) : []
-      const existingNames = existingProvided ? (updateData.existingNomesArquivos ?? []) : []
-
-      for (let i = 0; i < existing.length; i++) {
-        combinedArquivos.push(existing[i])
-      }
-
-      for (let i = 0; i < newArquivosBase64.length; i++) {
-        combinedArquivos.push(newArquivosBase64[i])
-      }
-      
-      const providedAllNames = updateData.nomes_arquivos
-      const expectedLen = existing.length + newArquivosBase64.length
-      if (providedAllNames && providedAllNames.length === expectedLen) {
-        payload.arquivos_base64 = combinedArquivos
-        payload.nomes_arquivos = providedAllNames
-      } else {
-        for (let i = 0; i < existing.length; i++) {
-          combinedNomes.push(existingNames[i] ?? '')
-        }
-        if (newArquivosBase64.length > 0) {
-          const providedNew = providedAllNames ?? []
-          for (let i = 0; i < newArquivosBase64.length; i++) {
-            const name = providedNew[i] ?? newNomesArquivos[i]
-            combinedNomes.push(name)
-          }
-        }
-        payload.arquivos_base64 = combinedArquivos
-        payload.nomes_arquivos = combinedNomes
-      }
+    // Adiciona os NOVOS arquivos
+    if (updateData.files && updateData.files.length > 0) {
+      updateData.files.forEach((file) => {
+        // O backend espera novos arquivos no campo 'novos_arquivos'
+        formData.append('novos_arquivos', file)
+      })
     }
 
-    return ApiClient.put<PostResponse>(API_CONFIG.ENDPOINTS.POSTS.UPDATE(id.toString()), payload)
+    if (updateData.remover_arquivos_ids && updateData.remover_arquivos_ids.length > 0) {
+      updateData.remover_arquivos_ids.forEach((idParaRemover) => {
+        // O backend espera os IDs dos arquivos a serem removidos
+        formData.append('remover_arquivos_ids', idParaRemover)
+      })
+    }
+
+    return ApiClient.upload<PostResponse>(
+      API_CONFIG.ENDPOINTS.POSTS.UPDATE(id.toString()),
+      formData,
+      'PUT'
+    )
   }
 
   // Deletar post
