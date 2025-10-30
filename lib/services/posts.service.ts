@@ -230,6 +230,8 @@ export class PostsService {
       })
     }
 
+
+    
     return ApiClient.upload<PostResponse>(
       API_CONFIG.ENDPOINTS.POSTS.UPDATE(id.toString()),
       formData,
